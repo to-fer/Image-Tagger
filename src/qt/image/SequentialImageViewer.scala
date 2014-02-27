@@ -1,9 +1,9 @@
-package image
+package qt.image
 
 import java.io.File
 import scala.collection.mutable
-import image.Image
-import gui.Parent
+import qt.image.Image
+import qt.gui.Parent
 
 // TODO replace this with a more general ImageView class?
 class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: Int, imageHeight: Int) {
