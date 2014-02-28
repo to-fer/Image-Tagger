@@ -3,7 +3,7 @@ package qt.image
 import java.io.File
 import scala.collection.mutable
 import qt.image.Image
-import qt.gui.Parent
+import qt.gui.{VBoxWidget, Parent}
 
 // TODO replace this with a more general ImageView class?
 class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: Int, imageHeight: Int) {

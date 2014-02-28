@@ -1,7 +1,7 @@
 package qt.gui
 
-import com.trolltech.qt.gui.{QWidget, QStackedLayout}
-import com.trolltech.qt.core.Qt
+import com.trolltech.qt.gui.QStackedLayout
+import qt.util.Container
 
 class StackedWidget extends Widget with Parent {
   private val stackedLayout = new QStackedLayout(delegate)

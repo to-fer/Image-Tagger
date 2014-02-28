@@ -6,7 +6,6 @@ class VBoxWidget extends Widget with Parent {
   private val vBoxLayout = new QVBoxLayout(delegate)
 
   override protected def layout(w: Widget): Unit = {
-    vBoxLayout.addWidget(w.delegate)
-    vBoxLayout.setAlignment(w.delegate, w.alignment:_*)
+    vBoxLayout.addWidget(w.delegate, 0, w.alignment:_*)
   }
 }

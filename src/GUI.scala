@@ -1,11 +1,11 @@
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import command.{AddTagCommand, QuitCommand, TagCommand}
 import db.TagDb
-import image.{SequentialImageViewer, Image}
-import init.QtApp
-import gui._
+import qt.image.{SequentialImageViewer, Image}
+import qt.init.QtApp
+import qt.gui._
 import java.nio.file.{Files, Paths}
-import util.Screen
+import qt.util.Screen
 
 object GUI extends QtApp {
 
@@ -19,8 +19,8 @@ object GUI extends QtApp {
 
     val tagDb = new TagDb("db.sqlite")
     val tags = tagDb.getTableNames
-    val imageDir = Paths.get(System.getProperty("user.home"), "Pictures", "Pony")
-    val imageDest = Paths.get(System.getProperty("user.home"), "Pictures", "Tagged")
+    val imageDir = Paths.get(System.getProperty("user.home"), "images")
+    val imageDest = Paths.get(System.getProperty("user.home"), "images", "tagged")
     if (!Files.exists(imageDest))
       Files.createDirectory(imageDest)
 
