@@ -72,26 +72,23 @@ object GUI extends QtApp {
                     tagDb.createTable(tag)
                   }
                 }
-                case TagCommand(tags) => {
-                  if (!tags.forall(tags.contains(_)))
-                    text = "Unknown tag!"
-                  else {
-                    val imageFile = viewer.currentImageFile
-                    val destFile = imageDest resolve imageFile.toPath.getFileName
-                    tags foreach { tag => {
-                      tagDb.addPathToTable(tag, destFile.toString)
-                    }}
-                    viewer.showNextImage()
-                    Files.move(imageFile.toPath, destFile)
-                  }
+                case TagCommand(tags) if (tags.forall(tags.contains(_))) => {
+                  val imageFile = viewer.currentImageFile
+                  val destFile = imageDest resolve imageFile.toPath.getFileName
+                  tags foreach { tag => {
+                    tagDb.addPathToTable(tag, destFile.toString)
+                  }}
+                  viewer.showNextImage()
+                  Files.move(imageFile.toPath, destFile)
                 }
-                // THIS WILL MATCH EVERYTHING! KEEP IT LAST.
                 case QuitCommand(_) => {
                   viewer.dispose()
                   returnPressed_=(commandEntered)
                   searchWidget.show()
                   imageWidget.hide()
                 }
+                case _ =>
+                  text = "Unknown command."
               }
             }
           })
