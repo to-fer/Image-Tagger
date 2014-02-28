@@ -18,8 +18,8 @@ object GUI extends QtApp {
 
   val (screenWidth, screenHeight) = Screen.size
   val searchWidget = new ScrollWidget {
-    width = screenWidth/2
-    height = screenHeight/2
+    width = screenWidth
+    height = screenHeight
   }
   val imageWidget = new VBoxWidget {
     backgroundRole = QPalette.ColorRole.Dark
@@ -37,8 +37,6 @@ object GUI extends QtApp {
   val lineEdit = new LineEdit {
     width = 400
     height = 25
-    parent = mainWindow
-    move((screenWidth - width)/2, screenHeight - height * 3)
 
     val commandEntered: () => Unit = () => {
       def onCommand() = {
@@ -84,8 +82,18 @@ object GUI extends QtApp {
                   tags foreach { tag => {
                     tagDb.addPathToTable(tag, destFile.toString)
                   }}
-                  viewer.showNextImage()
+                  if (viewer.hasNext)
+                    viewer.showNextImage()
+                  else
+                    text = "All images have been tagged."
                   Files.move(imageFile.toPath, destFile)
+                }
+                case "delete" => {
+                  val curImageFile = viewer.currentImageFile
+                  val curImage = viewer.getCurrentImage
+                  curImage.dispose()
+                  curImageFile.delete()
+                  viewer.showNextImage()
                 }
                 case QuitCommand(_) => {
                   viewer.dispose()
@@ -124,6 +132,10 @@ object GUI extends QtApp {
     searchWidget,
     imageWidget
   )
+
+  lineEdit.parent = mainWindow
+  lineEdit.move((screenWidth - lineEdit.width)/2, screenHeight - lineEdit.height * 3)
+  lineEdit.focus()
 
   mainWindow.show()
 }

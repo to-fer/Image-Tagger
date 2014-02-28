@@ -33,4 +33,6 @@ class Widget(override val delegate: QWidget = new QWidget) extends QtDelegate[QW
   def backgroundRole = delegate.backgroundRole
   def backgroundRole_=(colorRole: QPalette.ColorRole) =
     delegate.setBackgroundRole(colorRole)
+
+  def focus() = delegate.setFocus()
 }

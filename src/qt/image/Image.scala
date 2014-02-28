@@ -104,8 +104,11 @@ class Image(val path: String) extends Label {
   def dispose() = {
     if (movie.isEmpty)
       pixmap.get.dispose()
-    else
+    else {
+      movie.get.stop()
       movie.get.dispose()
+    }
+
     delegate.dispose()
   }
 }

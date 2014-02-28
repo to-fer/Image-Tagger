@@ -17,18 +17,21 @@ class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: I
     imageIndex += 1
     imageCache += preloadedImage
 
+
     if (imageCache.size > maxCacheSize) {
       val image = imageCache.dequeue()
       image.dispose()
     }
 
     addImage(preloadedImage)
-    preloadedImage = preloadImage(imageIndex + 1)
+    if (imageIndex  + 1 < imageFiles.size)
+      preloadedImage = preloadImage(imageIndex + 1)
   }
 
   def showFirstImage() = {
     addImage(new Image(imageFiles.head.toString, imageWidth, imageHeight))
-    preloadedImage = preloadImage(1)
+    if (imageIndex + 1 < imageFiles.size)
+      preloadedImage = preloadImage(1)
   }
 
   def preloadImage(index: Int) = new Image(imageFiles(index).toString, imageWidth, imageHeight)
@@ -42,10 +45,8 @@ class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: I
   }
 
   def addImage(image: Image) = {
-    if (currentImage != null) {
+    if (currentImage != null)
       parent -= image
-      currentImage.hide()
-    }
 
     parent += image
     currentImage = image
@@ -58,6 +59,8 @@ class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: I
   def getCurrentImage = currentImage
 
   def currentImageFile = imageFiles(imageIndex)
+
+  def hasNext = imageIndex < imageFiles.size
 
   def dispose() = {
     imageCache.foreach(_.dispose())

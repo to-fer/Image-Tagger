@@ -8,6 +8,7 @@ import org.tmatesoft.sqljet.core.table.SqlJetDb;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -134,15 +135,15 @@ public class TagDb {
 		}
 	}
 
-    public Set<String> getTableNames() {
-        Set<String> tableNames = null;
-        try {
-            tableNames = db.getSchema().getTableNames();
-        } catch (SqlJetException e) {
-            e.printStackTrace();
-        }
-        return tableNames;
-    }
+   public Set<String> getTableNames() {
+       Set<String> tableNames = null;
+       try {
+           tableNames = db.getSchema().getTableNames();
+       } catch (SqlJetException e) {
+           e.printStackTrace();
+       }
+       return tableNames;
+   }
 
 	public void close() {
 		try {
