@@ -2,7 +2,7 @@ package qt.gui
 
 import com.trolltech.qt.gui.QLineEdit
 
-class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget(delegate) {
+class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget {
   private var returnPressedFunction: Option[() => Unit] = None
 
   def text = delegate.text

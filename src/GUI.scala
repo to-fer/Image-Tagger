@@ -1,4 +1,4 @@
-import com.trolltech.qt.gui.QSizePolicy
+import com.trolltech.qt.gui.{QFrame, QPalette, QSizePolicy}
 import command.{AddTagCommand, QuitCommand, TagCommand}
 import db.TagDb
 import qt.image.{SequentialImageViewer, Image}
@@ -13,10 +13,16 @@ object GUI extends QtApp {
     title = "Tagger"
     maximized = true
     sizePolicy = new QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    backgroundRole = QPalette.ColorRole.Dark
   }
 
-  val searchWidget = new GridWidget
+  val (screenWidth, screenHeight) = Screen.size
+  val searchWidget = new ScrollWidget {
+    width = screenWidth/2
+    height = screenHeight/2
+  }
   val imageWidget = new VBoxWidget {
+    backgroundRole = QPalette.ColorRole.Dark
     hide()
   }
 
@@ -27,7 +33,7 @@ object GUI extends QtApp {
   if (!Files.exists(imageDest))
     Files.createDirectory(imageDest)
 
-  val (screenWidth, screenHeight) = Screen.size
+
   val lineEdit = new LineEdit {
     width = 400
     height = 25
@@ -96,10 +102,16 @@ object GUI extends QtApp {
         case tag => {
           if (knownTags.contains(tag)) {
             val taggedImagefiles = tagDb.getTableFiles(tag)
+            val gridWidget = new GridWidget
+            val imageWidth = screenWidth/5
+            val imageHeight = screenHeight/5
             taggedImagefiles foreach { f => {
-              val image = new Image(f.toString, screenWidth, screenHeight)
-              searchWidget += image
+              val image = new Image(f.toString, imageWidth, imageHeight) {
+                frameShape_=(QFrame.Shape.Box)
+              }
+              gridWidget += image
             }}
+            searchWidget.content = gridWidget
           }
           else
             println("Invalid tag.")

@@ -1,6 +1,7 @@
 package qt.gui
 
-import com.trolltech.qt.gui.QGridLayout
+import com.trolltech.qt.gui.{QLayout, QGridLayout}
+import qt.util.Container
 
 class GridWidget extends Widget with Layout {
   private val gridLayout = new QGridLayout(delegate)

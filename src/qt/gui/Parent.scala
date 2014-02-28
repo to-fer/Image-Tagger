@@ -8,7 +8,7 @@ trait Parent {
   def content = _content
   def content_=(w: Widget): Unit = {
     _content.clear()
-    _content += w
+    this += w
   }
   def content_=(sw: Seq[Widget]): Unit = {
     _content.clear()
