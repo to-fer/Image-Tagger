@@ -15,10 +15,10 @@ trait Parent {
     sw.foreach(+=)
   }
 
-  def += (w: Widget) =
+  def += (w: Widget): Unit =
     _content += w
 
-  def -= (w: Widget) = {
+  def -= (w: Widget): Unit = {
     _content -= w
   }
 }

@@ -11,7 +11,7 @@ trait Layout extends Parent {
   }
 
   override def +=(w: Widget) = {
-    super.+= w
+    super.+=(w)
     layout(w)
   }
 }
