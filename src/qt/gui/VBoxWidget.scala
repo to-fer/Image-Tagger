@@ -1,7 +1,6 @@
 package qt.gui
 
 import com.trolltech.qt.gui.QVBoxLayout
-import gui.Layout
 
 class VBoxWidget extends Widget with Layout {
   private val vBoxLayout = new QVBoxLayout(delegate)

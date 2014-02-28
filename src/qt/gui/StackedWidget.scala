@@ -1,7 +1,6 @@
 package qt.gui
 
 import com.trolltech.qt.gui.QStackedLayout
-import gui.Layout
 
 class StackedWidget extends Widget with Layout {
   private val stackedLayout = new QStackedLayout(delegate)
