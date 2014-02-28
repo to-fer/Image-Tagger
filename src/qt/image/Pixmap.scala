@@ -9,4 +9,5 @@ object Pixmap {
     val newSize = fitSize(imagePath, width, height)
     new QPixmap(imagePath).scaled(newSize, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
   }
+
 }

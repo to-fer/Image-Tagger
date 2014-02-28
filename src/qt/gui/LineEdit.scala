@@ -16,5 +16,4 @@ class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget(
     delegate.returnPressed.connect(fn, "apply()")
   }
 
-
 }

@@ -69,24 +69,30 @@ object Image {
   }
 }
 
-class Image(val path: String, w: Int, h: Int) extends Widget {
+class Image(val path: String) extends Widget {
   require(new File(path).exists)
+
+  val movie: Option[QMovie] = if (Image.isAnimated(path)) Some(Movie.movie(path)) else None
+  private var _pixmap: Option[QPixmap] = if (movie.isEmpty) Some(new QPixmap(path)) else None
+  def pixmap = _pixmap
+
+  def this(p: String, w: Int, h: Int) = {
+    this(p)
+    width = w
+    height = h
+    if (movie.isDefined) movie.get.setScaledSize(new QSize(w, h))
+    _pixmap = if(pixmap.isDefined) Some(pixmap.get.scaled(w, h)) else None
+  }
 
   val labelDelegate = new QLabel
   override val delegate = labelDelegate
-
-  width = w
-  height = h
-
-  val movie: Option[QMovie] = if (Image.isAnimated(path)) Some(Movie.movie(path, w, h)) else None
-  val pixmap: Option[QPixmap] = if (movie.isEmpty) Some(Pixmap.pixmap(path, w, h)) else None
 
   if (!movie.isEmpty)
     labelDelegate.setMovie(movie.get)
   else if (!pixmap.isEmpty)
     labelDelegate.setPixmap(pixmap.get)
   else
-    throw new IllegalArgumentException(path + " is a null qt.image!")
+    throw new IllegalArgumentException(path + " is a null image!")
 
   def dispose() = {
     if (movie.isEmpty)

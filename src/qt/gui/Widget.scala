@@ -1,7 +1,7 @@
 package qt.gui
 
 import qt.util.QtDelegate
-import com.trolltech.qt.gui.QWidget
+import com.trolltech.qt.gui.{QSizePolicy, QWidget}
 import com.trolltech.qt.core.Qt.AlignmentFlag
 
 class Widget(override val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
@@ -19,4 +19,12 @@ class Widget(override val delegate: QWidget = new QWidget) extends QtDelegate[QW
 
   def show() = delegate.show()
   def hide() = delegate.hide()
+
+  def parent = delegate.parentWidget
+  def parent_=(w: Widget) = delegate.setParent(w.delegate)
+
+  def move(x: Int, y: Int) = delegate.move(x, y)
+
+  def sizePolicy = delegate.sizePolicy
+  def sizePolicy_=(sizePolicy: QSizePolicy) = delegate.setSizePolicy(sizePolicy)
 }
