@@ -49,63 +49,66 @@ object GUI extends QtApp {
 
       enteredCommand match {
         case "tag" => {
-          searchWidget.hide()
-          imageWidget.show()
-
           val imageFiles = Image.imageFilesIn(imageDir.toString)
+          if (!imageFiles.isEmpty) {
+            searchWidget.hide()
+            imageWidget.show()
 
-          val viewer = new SequentialImageViewer(
-            parent = imageWidget,
-            imageFiles = imageFiles,
-            imageWidth = screenWidth,
-            imageHeight = screenHeight
-          )
-          viewer.showFirstImage()
-          returnPressed_=(() => {
-            val enteredCommand = onCommand()
+            val viewer = new SequentialImageViewer(
+              parent = imageWidget,
+              imageFiles = imageFiles,
+              imageWidth = screenWidth,
+              imageHeight = screenHeight
+            )
+            viewer.showFirstImage()
+            returnPressed_=(() => {
+              val enteredCommand = onCommand()
 
-            if (enteredCommand != "") {
-              enteredCommand match {
-                case AddTagCommand(tag) => {
-                  if (tag.contains(" "))
-                    println("Tags cannot contain spaces.")
-                  else if (knownTags.contains(tag))
-                    println("That tag already exists.")
-                  else {
-                    knownTags.add(tag)
-                    tagDb.createTable(tag)
+              if (enteredCommand != "") {
+                enteredCommand match {
+                  case AddTagCommand(tag) => {
+                    if (tag.contains(" "))
+                      println("Tags cannot contain spaces.")
+                    else if (knownTags.contains(tag))
+                      println("That tag already exists.")
+                    else {
+                      knownTags.add(tag)
+                      tagDb.createTable(tag)
+                    }
                   }
-                }
-                case TagCommand(tags) if (tags.forall(knownTags.contains(_))) => {
-                  val imageFile = viewer.currentImageFile
-                  val destFile = imageDest resolve imageFile.toPath.getFileName
-                  tags foreach { tag => {
-                    tagDb.addPathToTable(tag, destFile.toString)
-                  }}
-                  if (viewer.hasNext)
+                  case TagCommand(tags) if (tags.forall(knownTags.contains(_))) => {
+                    val imageFile = viewer.currentImageFile
+                    val destFile = imageDest resolve imageFile.toPath.getFileName
+                    tags foreach { tag => {
+                      tagDb.addPathToTable(tag, destFile.toString)
+                    }}
+                    if (viewer.hasNext)
+                      viewer.showNextImage()
+                    else
+                      text = "All images have been tagged."
+                    Files.move(imageFile.toPath, destFile)
+                  }
+                  case "delete" => {
+                    val curImageFile = viewer.currentImageFile
+                    val curImage = viewer.getCurrentImage
+                    curImage.dispose()
+                    curImageFile.delete()
                     viewer.showNextImage()
-                  else
-                    text = "All images have been tagged."
-                  Files.move(imageFile.toPath, destFile)
+                  }
+                  case QuitCommand(_) => {
+                    viewer.dispose()
+                    returnPressed_=(commandEntered)
+                    searchWidget.show()
+                    imageWidget.hide()
+                  }
+                  case _ =>
+                    text = "Unknown command."
                 }
-                case "delete" => {
-                  val curImageFile = viewer.currentImageFile
-                  val curImage = viewer.getCurrentImage
-                  curImage.dispose()
-                  curImageFile.delete()
-                  viewer.showNextImage()
-                }
-                case QuitCommand(_) => {
-                  viewer.dispose()
-                  returnPressed_=(commandEntered)
-                  searchWidget.show()
-                  imageWidget.hide()
-                }
-                case _ =>
-                  text = "Unknown command."
               }
-            }
-          })
+            })
+          }
+          else
+            text = "There are no images to tag."
         }
         case tag => {
           if (knownTags.contains(tag)) {
