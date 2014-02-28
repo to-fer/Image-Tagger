@@ -4,6 +4,7 @@ import com.trolltech.qt.gui._
 import java.io.File
 import com.trolltech.qt.core.QSize
 import qt.gui.Widget
+import com.trolltech.qt.core.Qt.{AspectRatioMode, TransformationMode}
 
 object Image {
   def imageFilesIn(path: String): Seq[File] = {
@@ -76,14 +77,6 @@ class Image(val path: String) extends Widget {
   private var _pixmap: Option[QPixmap] = if (movie.isEmpty) Some(new QPixmap(path)) else None
   def pixmap = _pixmap
 
-  def this(p: String, w: Int, h: Int) = {
-    this(p)
-    width = w
-    height = h
-    if (movie.isDefined) movie.get.setScaledSize(new QSize(w, h))
-    _pixmap = if(pixmap.isDefined) Some(pixmap.get.scaled(w, h)) else None
-  }
-
   val labelDelegate = new QLabel
   override val delegate = labelDelegate
 
@@ -93,6 +86,23 @@ class Image(val path: String) extends Widget {
     labelDelegate.setPixmap(pixmap.get)
   else
     throw new IllegalArgumentException(path + " is a null image!")
+
+  def this(p: String, w: Int, h: Int) = {
+    this(p)
+    width = w
+    height = h
+    if (movie.isDefined) {
+      movie.get.setScaledSize(new QSize(w, h))
+      labelDelegate.setMovie(movie.get)
+    }
+    _pixmap = if(_pixmap.isDefined) {
+      val scaledPixmap = _pixmap.get.scaled(w, h,
+        AspectRatioMode.KeepAspectRatio,
+        TransformationMode.SmoothTransformation)
+      labelDelegate.setPixmap(scaledPixmap)
+      Some(scaledPixmap)
+    } else None
+  }
 
   def dispose() = {
     if (movie.isEmpty)

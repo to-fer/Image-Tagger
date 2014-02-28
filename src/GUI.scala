@@ -21,7 +21,7 @@ object GUI extends QtApp {
   }
 
   val tagDb = new TagDb("db.sqlite")
-  val tags = tagDb.getTableNames
+  val knownTags = tagDb.getTableNames
   val imageDir = Paths.get(System.getProperty("user.home"), "images")
   val imageDest = Paths.get(System.getProperty("user.home"), "images", "tagged")
   if (!Files.exists(imageDest))
@@ -65,14 +65,14 @@ object GUI extends QtApp {
                 case AddTagCommand(tag) => {
                   if (tag.contains(" "))
                     println("Tags cannot contain spaces.")
-                  else if (tags.contains(tag))
+                  else if (knownTags.contains(tag))
                     println("That tag already exists.")
                   else {
-                    tags.add(tag)
+                    knownTags.add(tag)
                     tagDb.createTable(tag)
                   }
                 }
-                case TagCommand(tags) if (tags.forall(tags.contains(_))) => {
+                case TagCommand(tags) if (tags.forall(knownTags.contains(_))) => {
                   val imageFile = viewer.currentImageFile
                   val destFile = imageDest resolve imageFile.toPath.getFileName
                   tags foreach { tag => {
@@ -94,10 +94,10 @@ object GUI extends QtApp {
           })
         }
         case tag => {
-          if (tags.contains(tag)) {
+          if (knownTags.contains(tag)) {
             val taggedImagefiles = tagDb.getTableFiles(tag)
             taggedImagefiles foreach { f => {
-              val image = new Image(f.toString)
+              val image = new Image(f.toString, screenWidth, screenHeight)
               searchWidget += image
             }}
           }
