@@ -9,20 +9,16 @@ trait Parent {
   def content_=(w: Widget): Unit = {
     _content.clear()
     _content += w
-    layout(w)
   }
   def content_=(sw: Seq[Widget]): Unit = {
     _content.clear()
     sw.foreach(+=)
   }
 
-  def += (w: Widget) = {
+  def += (w: Widget) =
     _content += w
-    layout(w)
-  }
 
   def -= (w: Widget) = {
     _content -= w
   }
-  protected def layout(w: Widget)
 }

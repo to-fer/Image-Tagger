@@ -1,9 +1,9 @@
 package qt.gui
 
-import com.trolltech.qt.gui.{QWidget, QGridLayout}
-import com.trolltech.qt.core.Qt
+import com.trolltech.qt.gui.QGridLayout
+import gui.Layout
 
-class GridWidget extends Widget with Parent {
+class GridWidget extends Widget with Layout {
   private val gridLayout = new QGridLayout(delegate)
   gridLayout.setSpacing(0)
 
