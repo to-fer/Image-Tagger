@@ -6,7 +6,6 @@ class ScrollWidget(override val delegate: QWidget = new QWidget) extends Widget 
   val scroll = new QScrollArea(delegate) {
     setFrameShape(QFrame.Shape.NoFrame)
     setAutoFillBackground(true)
-    setBackgroundRole(QPalette.ColorRole.Dark)
   }
 
   override def width_=(w: Int) =

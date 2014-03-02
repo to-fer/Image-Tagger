@@ -13,7 +13,6 @@ object GUI extends QtApp {
     title = "Tagger"
     maximized = true
     sizePolicy = new QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    backgroundRole = QPalette.ColorRole.Dark
   }
 
   val (screenWidth, screenHeight) = Screen.size
@@ -22,13 +21,15 @@ object GUI extends QtApp {
     height = screenHeight
   }
   val imageWidget = new VBoxWidget {
-    backgroundRole = QPalette.ColorRole.Dark
     hide()
   }
 
   val tagDb = new TagDb("db.sqlite")
   val knownTags = tagDb.getTableNames
   val imageDir = Paths.get(System.getProperty("user.home"), "images")
+  if (!Files.exists(imageDir))
+    Files.createDirectory(imageDir)
+
   val imageDest = Paths.get(System.getProperty("user.home"), "images", "tagged")
   if (!Files.exists(imageDest))
     Files.createDirectory(imageDest)
@@ -137,8 +138,11 @@ object GUI extends QtApp {
   )
 
   lineEdit.parent = mainWindow
-  lineEdit.move((screenWidth - lineEdit.width)/2, screenHeight - lineEdit.height * 3)
   lineEdit.focus()
 
   mainWindow.show()
+
+  // This must stay here, as the call to mainWindow's width and height will not return the correct values until it is
+  // shown.
+  lineEdit.move((mainWindow.width - lineEdit.width)/2, mainWindow.height - lineEdit.height)
 }
