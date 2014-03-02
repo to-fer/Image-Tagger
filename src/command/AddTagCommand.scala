@@ -12,3 +12,7 @@ object AddTagCommand {
     }
   }
 }
+
+class AddTagCommand(knownTags: Seq[String]) {
+
+}
