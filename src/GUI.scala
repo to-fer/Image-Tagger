@@ -35,7 +35,7 @@ object GUI extends QtApp {
   if (!Files.exists(imageDest))
     Files.createDirectory(imageDest)
 
-  val lineEdit = new LineEdit {
+  val lineEdit: LineEdit = new LineEdit {
     width = 400
     height = 25
     alignment = List(AlignmentFlag.AlignHCenter, AlignmentFlag.AlignBottom)
@@ -48,6 +48,10 @@ object GUI extends QtApp {
         enteredCommand
       }
 
+      def errorMessage(msg: String): Unit = {
+        text = msg
+        lineEdit.selectAll()
+      }
       val enteredCommand = onCommand()
 
       enteredCommand match {
@@ -71,9 +75,9 @@ object GUI extends QtApp {
                 enteredCommand match {
                   case AddTagCommand(tag) => {
                     if (tag.contains(" "))
-                      println("Tags cannot contain spaces.")
+                      errorMessage("Tags cannot contain spaces.")
                     else if (knownTags.contains(tag))
-                      println("That tag already exists.")
+                      errorMessage("That tag already exists.")
                     else {
                       knownTags.add(tag)
                       tagDb.createTable(tag)
@@ -88,7 +92,7 @@ object GUI extends QtApp {
                     if (viewer.hasNext)
                       viewer.showNextImage()
                     else
-                      text = "All images have been tagged."
+                      errorMessage("All images have been tagged.")
                     Files.move(imageFile.toPath, destFile)
                   }
                   case "delete" => {
@@ -105,13 +109,13 @@ object GUI extends QtApp {
                     imageWidget.hide()
                   }
                   case _ =>
-                    text = "Unknown command."
+                    errorMessage("Unknown command.")
                 }
               }
             }
           }
           else
-            text = "There are no images to tag."
+            errorMessage("There are no images to tag.")
         }
         case tag => {
           if (knownTags.contains(tag)) {
@@ -128,7 +132,7 @@ object GUI extends QtApp {
             searchWidget.content = gridWidget
           }
           else
-            println("Invalid tag.")
+            errorMessage("Invalid tag.")
         }
       }}
     returnPressed = commandEntered
