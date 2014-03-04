@@ -1,6 +1,6 @@
 package qt.gui
 
-import qt.util.{Container, QtDelegate}
+import qt.util.QtDelegate
 import com.trolltech.qt.gui.{QFrame, QPalette, QSizePolicy, QWidget}
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.core.QPoint

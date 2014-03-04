@@ -1,11 +1,10 @@
 package qt.gui
 
-import com.trolltech.qt.gui.{QPalette, QFrame, QScrollArea, QWidget}
+import com.trolltech.qt.gui.{QFrame, QScrollArea, QWidget}
 
 class ScrollWidget(override val delegate: QWidget = new QWidget) extends Widget with Parent {
   val scroll = new QScrollArea(delegate) {
     setFrameShape(QFrame.Shape.NoFrame)
-    setAutoFillBackground(true)
   }
 
   override def width_=(w: Int) =

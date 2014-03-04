@@ -1,4 +1,5 @@
-import com.trolltech.qt.gui.{QFrame, QPalette, QSizePolicy}
+import com.trolltech.qt.core.Qt.AlignmentFlag
+import com.trolltech.qt.gui.{QFrame, QSizePolicy}
 import command.{AddTagCommand, QuitCommand, TagCommand}
 import db.TagDb
 import qt.image.{SequentialImageViewer, Image}
@@ -9,7 +10,7 @@ import qt.util.Screen
 
 object GUI extends QtApp {
 
-  val mainWindow: Window = new Window {
+  override val mainWindow = new Window {
     title = "Tagger"
     maximized = true
     sizePolicy = new QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -34,10 +35,11 @@ object GUI extends QtApp {
   if (!Files.exists(imageDest))
     Files.createDirectory(imageDest)
 
-
   val lineEdit = new LineEdit {
     width = 400
     height = 25
+    alignment = List(AlignmentFlag.AlignHCenter, AlignmentFlag.AlignBottom)
+    focus()
 
     val commandEntered: () => Unit = () => {
       def onCommand() = {
@@ -133,16 +135,8 @@ object GUI extends QtApp {
   }
 
   mainWindow content = List (
+    lineEdit,
     searchWidget,
     imageWidget
   )
-
-  lineEdit.parent = mainWindow
-  lineEdit.focus()
-
-  mainWindow.show()
-
-  // This must stay here, as the call to mainWindow's width and height will not return the correct values until it is
-  // shown.
-  lineEdit.move((mainWindow.width - lineEdit.width)/2, mainWindow.height - lineEdit.height)
 }
