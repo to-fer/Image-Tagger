@@ -121,7 +121,7 @@ object GUI extends QtApp {
             val imageHeight = screenHeight/5
             taggedImagefiles foreach { f => {
               val image = new Image(f.toString, imageWidth, imageHeight) {
-                frameShape_=(QFrame.Shape.Box)
+                frameShape = QFrame.Shape.Box
               }
               gridWidget += image
             }}
