@@ -64,7 +64,7 @@ object GUI extends QtApp {
               imageHeight = screenHeight
             )
             viewer.showFirstImage()
-            returnPressed_=(() => {
+            returnPressed = () => {
               val enteredCommand = onCommand()
 
               if (enteredCommand != "") {
@@ -100,7 +100,7 @@ object GUI extends QtApp {
                   }
                   case QuitCommand(_) => {
                     viewer.dispose()
-                    returnPressed_=(commandEntered)
+                    returnPressed = commandEntered
                     searchWidget.show()
                     imageWidget.hide()
                   }
@@ -108,7 +108,7 @@ object GUI extends QtApp {
                     text = "Unknown command."
                 }
               }
-            })
+            }
           }
           else
             text = "There are no images to tag."
@@ -131,7 +131,7 @@ object GUI extends QtApp {
             println("Invalid tag.")
         }
       }}
-    returnPressed_=(commandEntered)
+    returnPressed = commandEntered
   }
 
   mainWindow content = List (

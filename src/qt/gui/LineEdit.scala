@@ -15,5 +15,5 @@ class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget 
     returnPressedFunction = Some(fn)
     delegate.returnPressed.connect(fn, "apply()")
   }
-
+  def returnPressed: Option[() => Unit] = returnPressedFunction
 }
