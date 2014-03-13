@@ -1,5 +1,6 @@
-import com.trolltech.qt.core.Qt.AlignmentFlag
-import com.trolltech.qt.gui.{QFrame, QSizePolicy}
+package gui
+
+import com.trolltech.qt.gui.{QSizePolicy, QFrame}
 import command.{AddTagCommand, QuitCommand, TagCommand}
 import db.TagDb
 import qt.image.{SequentialImageViewer, Image}
@@ -7,6 +8,8 @@ import qt.init.QtApp
 import qt.gui._
 import java.nio.file.{Files, Paths}
 import qt.util.Screen
+import com.trolltech.qt.core.Qt.AlignmentFlag
+import com.trolltech.qt.gui.QStackedLayout.StackingMode
 
 object GUI extends QtApp {
 
@@ -22,7 +25,18 @@ object GUI extends QtApp {
     height = screenHeight
   }
   val imageWidget = new VBoxWidget {
-    hide()
+    width = screenWidth
+    height = screenHeight
+  }
+  val displayStack = new StackedWidget {
+    width = screenWidth
+    height = screenHeight
+    stackingMode = StackingMode.StackOne
+    content = List (
+      searchWidget,
+      imageWidget
+    )
+    currentWidget = searchWidget
   }
 
   val tagDb = new TagDb("db.sqlite")
@@ -58,8 +72,7 @@ object GUI extends QtApp {
         case "tag" => {
           val imageFiles = Image.imageFilesIn(imageDir.toString)
           if (!imageFiles.isEmpty) {
-            searchWidget.hide()
-            imageWidget.show()
+            displayStack.currentWidget = imageWidget
 
             val viewer = new SequentialImageViewer(
               parent = imageWidget,
@@ -105,8 +118,7 @@ object GUI extends QtApp {
                   case QuitCommand(_) => {
                     viewer.dispose()
                     returnPressed = commandEntered
-                    searchWidget.show()
-                    imageWidget.hide()
+                    displayStack.currentWidget = searchWidget
                   }
                   case _ =>
                     errorMessage("Unknown command.")
@@ -140,7 +152,6 @@ object GUI extends QtApp {
 
   mainWindow content = List (
     lineEdit,
-    searchWidget,
-    imageWidget
+    displayStack
   )
 }
