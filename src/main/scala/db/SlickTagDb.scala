@@ -1,4 +1,6 @@
+import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
+import Database.dynamicSession
 
 object SlickTagDb {
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
@@ -10,28 +12,54 @@ object SlickTagDb {
   private class TagAliases(tag: Tag) extends Table[(String, String)](tag, "TAG_ALIASES") {
     def alias = column[String]("ALIAS")
     def aliasedTag = column[String]("ALIASED_TAG")
+    override def * = (alias, aliasedTag)
     def aliasedTagForeignKey = foreignKey("ALIASED_TAG_FK", aliasedTag, tagTable)(_.tagName)
     def aliasPrimaryKey = primaryKey("ALIAS_PK", (alias, aliasedTag))
-    override def * = (alias, aliasedTag)
   }
   private val tagAliasesTable = TableQuery[TagAliases]
 
   private class TaggedFiles(tag: Tag) extends Table[(String, String)](tag, "TAGGED_FILES") {
     def path = column[String]("PATH")
     def tagName = column[String]("TAG_NAME")
+    override def * = (path, tagName)
     def tagNameForeignKey = foreignKey("TAG_NAME_FK", tagName, tagTable)(_.tagName)
-    def taggedFilePrimaryKey = primaryKey("TAGGED_FILE_PK", (path, tag))
-    def taggedFileIndex = index("TAGGED_FILE_IDX", (path, tag), unique = true)
-    def * = (path, tagName)
+    def taggedFilePrimaryKey = primaryKey("TAGGED_FILE_PK", (path, tagName))
+    def taggedFileIndex = index("TAGGED_FILE_IDX", (path, tagName), unique = true)
   }
   private val taggedFilesTable = TableQuery[TaggedFiles]
 
   private lazy val database = Database.forURL("jdbc:sqlite:db.sqlite", driver = "org.sqlite.JDBC")
-  database withSession {
-    implicit session =>
-    (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
+  (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
+
+  def addTag(tagName: String): Unit = database withDynTransaction {
+    tagTable += tagName
   }
 
-  def addTag(tagName: String) =
-    tagTable += tagName
+  def tags: Option[List[String]] = {
+    val tagList = database withDynTransaction {
+      for (row <- tagTable) yield row.tagName
+    }.list
+    if (tagList != null) Some(tagList)
+    else None
+  }
+
+  def tagFile(fileToTag: File, tag: String, moreTags: String*): Unit =
+    tagFile(fileToTag.getPath, tag, moreTags:_*)
+
+  def tagFile(pathToTag: String, tag: String, moreTags: String*): Unit =
+    database withDynTransaction {
+      val tagsToApply = tag :: moreTags :: Nil
+      for (tagToApply <- tagsToApply)
+        taggedFilesTable += (pathToTag, tag)
+    }
+
+  def filesWithTag(tag: String): List[File] = {
+    val pathsWithTag = database withDynTransaction {
+      val rowsWithTag = taggedFilesTable filter (_.tagName == tag)
+      rowsWithTag map (_.path)
+    }.list
+
+    pathsWithTag.map(new File(_))
+  }
+
 }
