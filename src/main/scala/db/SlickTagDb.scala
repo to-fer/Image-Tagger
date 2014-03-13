@@ -25,4 +25,11 @@ object SlickTagDb {
     def * = (path, tagName)
   }
   val taggedFilesTable = TableQuery[TaggedFiles]
+
+  val database = Database.forURL("jdbc:sqlite:db.sqlite", driver = "org.sqlite.JDBC")
+  database withSession {
+    implicit session =>
+
+    (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
+  }
 }
