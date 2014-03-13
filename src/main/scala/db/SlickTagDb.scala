@@ -31,4 +31,7 @@ object SlickTagDb {
     implicit session =>
     (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
   }
+
+  def addTag(tagName: String) =
+    tagTable += tagName
 }
