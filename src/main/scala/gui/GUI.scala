@@ -9,6 +9,7 @@ import java.nio.file.{Files, Paths}
 import qt.util.Screen
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
+import db.SlickTagDb
 
 object GUI extends QtApp {
 
@@ -38,8 +39,11 @@ object GUI extends QtApp {
     currentWidget = searchWidget
   }
 
-  val tagDb = new TagDb("db.sqlite")
-  val knownTags = tagDb.getTableNames
+  val tagDb = new SlickTagDb("db.sqlite")
+  var knownTags = tagDb.tags match {
+    case Some(tags) => tags.toSet
+    case None => throw new RuntimeException("Could not read tags from database.")
+  }
   val imageDir = Paths.get(System.getProperty("user.home"), "images")
   if (!Files.exists(imageDir))
     Files.createDirectory(imageDir)
@@ -91,15 +95,15 @@ object GUI extends QtApp {
                     else if (knownTags.contains(tag))
                       errorMessage("That tag already exists.")
                     else {
-                      knownTags.add(tag)
-                      tagDb.createTable(tag)
+                      knownTags = knownTags + tag
+                      tagDb.addTag(tag)
                     }
                   }
                   case TagCommand(tags) if (tags.forall(knownTags.contains(_))) => {
                     val imageFile = viewer.currentImageFile
                     val destFile = imageDest resolve imageFile.toPath.getFileName
                     tags foreach { tag => {
-                      tagDb.addPathToTable(tag, destFile.toString)
+                      tagDb.tagFile(tag, destFile.toString)
                     }}
                     if (viewer.hasNext)
                       viewer.showNextImage()
@@ -130,7 +134,7 @@ object GUI extends QtApp {
         }
         case tag => {
           if (knownTags.contains(tag)) {
-            val taggedImagefiles = tagDb.getTableFiles(tag)
+            val taggedImagefiles = tagDb.filesWithTag(tag)
             val gridWidget = new GridWidget
             val imageWidth = screenWidth/5
             val imageHeight = screenHeight/5
