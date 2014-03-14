@@ -1,3 +1,5 @@
+package db
+
 import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
