@@ -4,7 +4,7 @@ import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
 
-object SlickTagDb {
+class SlickTagDb(dbPath: String) {
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
     def tagName = column[String]("TAG_NAME", O.PrimaryKey)
     override def * = tagName
@@ -30,7 +30,7 @@ object SlickTagDb {
   }
   private val taggedFilesTable = TableQuery[TaggedFiles]
 
-  private lazy val database = Database.forURL("jdbc:sqlite:db.sqlite", driver = "org.sqlite.JDBC")
+  private lazy val database = Database.forURL(s"jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
   (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
 
   def addTag(tagName: String): Unit = database withDynTransaction {
