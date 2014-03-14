@@ -2,7 +2,6 @@ package gui
 
 import com.trolltech.qt.gui.{QSizePolicy, QFrame}
 import command.{AddTagCommand, QuitCommand, TagCommand}
-import db.TagDb
 import qt.image.{SequentialImageViewer, Image}
 import qt.init.QtApp
 import qt.gui._
