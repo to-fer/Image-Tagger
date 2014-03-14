@@ -45,14 +45,10 @@ class SlickTagDb(dbPath: String) {
     else None
   }
 
-  def tagFile(fileToTag: File, tag: String, moreTags: String*): Unit =
-    tagFile(fileToTag.getPath, tag, moreTags:_*)
-
-  def tagFile(pathToTag: String, tag: String, moreTags: String*): Unit =
+  def tagFile(pathToTag: String, tagsToApply: Seq[String]): Unit =
     database withDynTransaction {
-      val tagsToApply = tag :: moreTags :: Nil
-      for (tagToApply <- tagsToApply)
-        taggedFilesTable += (pathToTag, tag)
+      val rowsToAdd = tagsToApply.map((pathToTag, _))
+      taggedFilesTable ++= rowsToAdd
     }
 
   def filesWithTag(tag: String): List[File] = {

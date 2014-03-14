@@ -102,9 +102,7 @@ object GUI extends QtApp {
                   case TagCommand(tags) if (tags.forall(knownTags.contains(_))) => {
                     val imageFile = viewer.currentImageFile
                     val destFile = imageDest resolve imageFile.toPath.getFileName
-                    tags foreach { tag => {
-                      tagDb.tagFile(tag, destFile.toString)
-                    }}
+                    tagDb.tagFile(destFile.toString, tags)
                     if (viewer.hasNext)
                       viewer.showNextImage()
                     else
