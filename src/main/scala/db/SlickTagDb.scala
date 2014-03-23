@@ -3,6 +3,7 @@ package db
 import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
+import java.nio.file.{Paths, Files}
 
 class SlickTagDb(dbPath: String) {
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
@@ -31,8 +32,10 @@ class SlickTagDb(dbPath: String) {
   private val taggedFilesTable = TableQuery[TaggedFiles]
 
   private lazy val database = Database.forURL(s"jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
-  database withDynSession {
-    (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
+  if (!Files.exists(Paths.get(dbPath))) {
+    database withDynSession {
+      (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
+    }
   }
 
   def addTag(tagName: String): Unit = database withDynTransaction {
