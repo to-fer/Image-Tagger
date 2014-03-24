@@ -22,7 +22,6 @@ class StackedWidget extends Widget with Layout {
   def currentWidget =
     stackedLayout.currentWidget
 
-  // TODO Container causes problem for currentWidget_=
   override protected def layout(w: Widget): Unit = {
     stackedLayout.addStackedWidget(w.delegate)
   }
