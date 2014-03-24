@@ -3,7 +3,6 @@ package db
 import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
-import java.nio.file.{Paths, Files}
 import java.nio.file.{Files, Paths}
 
 class SlickTagDb(dbPath: String) {
