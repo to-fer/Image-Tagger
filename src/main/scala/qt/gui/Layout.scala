@@ -1,7 +1,7 @@
 package qt.gui
 
 trait Layout extends Parent {
-  private var containerMap = Map[Widget, Container]()
+  private[gui] var containerMap = Map[Widget, Container]()
 
   protected def layout(w: Widget)
 
