@@ -2,8 +2,6 @@ package qt.gui
 
 import com.trolltech.qt.gui.QStackedLayout
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
-import scala.collection.mutable
-import com.trolltech.qt.core.Qt.AlignmentFlag
 
 class StackedWidget extends Widget with Layout {
   private val stackedLayout = new QStackedLayout(delegate)
