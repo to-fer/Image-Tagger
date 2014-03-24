@@ -152,7 +152,7 @@ object GUI extends QtApp {
   }
 
   mainWindow content = List (
-    lineEdit,
-    displayStack
+    displayStack,
+    lineEdit
   )
 }
