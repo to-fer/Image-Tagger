@@ -38,12 +38,12 @@ object GUI extends QtApp {
     )
     currentWidget = searchWidget
   }
-
   val tagDb = new SlickTagDb("db.sqlite")
   var knownTags = tagDb.tags match {
     case Some(tags) => tags.toSet
     case None => throw new RuntimeException("Could not read tags from database.")
   }
+
   val imageDir = Paths.get(System.getProperty("user.home"), "images")
   if (!Files.exists(imageDir))
     Files.createDirectory(imageDir)
