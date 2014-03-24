@@ -17,7 +17,7 @@ class StackedWidget extends Widget with Layout {
   def currentWidget_=(w: Widget) = {
     if (stackingMode != StackingMode.StackOne)
       throw new UnsupportedOperationException("StackedWidget is not in StackOne stacking mode.")
-    stackedLayout.setCurrentWidget(w.delegate)
+    stackedLayout.setCurrentWidget(containerMap(w).delegate)
   }
   def currentWidget =
     stackedLayout.currentWidget
