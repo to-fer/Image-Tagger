@@ -18,6 +18,5 @@ class GridWidget extends Widget with Layout {
     val rowNum = content.size / maxColumns
     val colNum = content.size % maxColumns
     gridLayout.addWidget(w.delegate, rowNum, colNum)
-    gridLayout.setAlignment(w.delegate, w.alignment:_*)
   }
 }
