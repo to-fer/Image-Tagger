@@ -36,18 +36,11 @@ class SlickTagDb(dbPath: String) {
   private val taggedFilesTable = TableQuery[TaggedFiles]
 
   private lazy val database = Database.forURL(s"jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
-<<<<<<< HEAD
-  if (!Files.exists(Paths.get(dbPath)))
-    database withDynSession {
-      (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
-    }
-=======
 
   if (!Files.exists(Paths.get(dbPath)))
     database withDynSession {
       (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
     }
->>>>>>> ba49979177b8af2f6a7750ec3b4a9a101d18270a
 
   def addTag(tagName: String): Unit = database withDynTransaction {
     tagTable += tagName
