@@ -1,13 +1,13 @@
 package gui
 
-import com.trolltech.qt.gui.{QPalette, QSizePolicy, QFrame}
+import com.trolltech.qt.gui.QFrame
 import command.{AddTagCommand, QuitCommand, TagCommand}
 import qt.image.{SequentialImageViewer, Image}
 import qt.init.QtApp
 import qt.gui._
 import java.nio.file.{Files, Paths}
 import qt.util.Screen
-import com.trolltech.qt.core.Qt.{WidgetAttribute, AlignmentFlag}
+import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
 import db.SlickTagDb
 
