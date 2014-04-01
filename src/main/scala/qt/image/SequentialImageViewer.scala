@@ -3,10 +3,10 @@ package qt.image
 import java.io.File
 import scala.collection.mutable
 import qt.image.Image
-import qt.gui.{VBoxWidget, Parent}
+import qt.gui.{Container, Layout, VBoxWidget, Parent}
 
 // TODO replace this with a more general ImageView class?
-class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: Int, imageHeight: Int) {
+class SequentialImageViewer(layout: Layout, imageFiles: Seq[File], imageWidth: Int, imageHeight: Int) {
   private var imageIndex = 0
   private var preloadedImage: Image = _
   private val imageCache = mutable.Queue[Image]()
@@ -17,19 +17,18 @@ class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: I
     imageIndex += 1
     imageCache += preloadedImage
 
-
     if (imageCache.size > maxCacheSize) {
       val image = imageCache.dequeue()
       image.dispose()
     }
 
-    addImage(preloadedImage)
+    showImage(preloadedImage)
     if (imageIndex  + 1 < imageFiles.size)
       preloadedImage = preloadImage(imageIndex + 1)
   }
 
   def showFirstImage() = {
-    addImage(new Image(imageFiles.head.toString, imageWidth, imageHeight))
+    showImage(new Image(imageFiles.head.toString, imageWidth, imageHeight))
     if (imageIndex + 1 < imageFiles.size)
       preloadedImage = preloadImage(1)
   }
@@ -39,21 +38,24 @@ class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: I
   def showPreviousImage() = {
     imageIndex -= 1
     if (!imageCache.isEmpty)
-      addImage(imageCache.dequeue())
+      showImage(imageCache.dequeue())
     else
-      addImage(new Image(imageFiles(imageIndex).toString, imageWidth, imageHeight))
+      showImage(new Image(imageFiles(imageIndex).toString, imageWidth, imageHeight))
   }
 
-  def addImage(image: Image) = {
-    if (currentImage != null)
-      parent -= image
+  def showImage(image: Image) = {
+    if (currentImage != null) {
+      currentImage.hide()
+      layout -= currentImage
+    }
 
-    parent += image
+
+    layout += image
     currentImage = image
   }
 
   def hasPreviousImage = imageIndex > 0
-  
+
   def hasNextImage = imageIndex < imageFiles.length - 1
 
   def getCurrentImage = currentImage
@@ -65,7 +67,7 @@ class SequentialImageViewer(parent: Parent, imageFiles: Seq[File], imageWidth: I
   def dispose() = {
     imageCache.foreach(_.dispose())
     imageCache.clear()
-    parent -= currentImage
+    layout -= currentImage
     currentImage.dispose()
   }
 }
