@@ -8,7 +8,11 @@ class Container(childWidget: QWidget, alignmentList: Seq[AlignmentFlag]) extends
 
   private val layout = new QVBoxLayout(delegate)
   alignment = alignmentList
+
+  // Required to make the Container transparent so it doesn't block other widgets from appearing.
   delegate.setStyleSheet("background: transparent;")
+  // Required so the Container doesn't block mouse events intended for other Widgets.
   delegate.setAttribute(WidgetAttribute.WA_TransparentForMouseEvents)
+
   layout.addWidget(childWidget, 0, alignmentList:_*)
 }
