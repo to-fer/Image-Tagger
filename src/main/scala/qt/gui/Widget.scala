@@ -5,9 +5,8 @@ import com.trolltech.qt.gui.{QFrame, QPalette, QSizePolicy, QWidget}
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.core.QPoint
 
-class Widget(override val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
+class Widget(val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
   private var _alignment: Seq[AlignmentFlag] = List(AlignmentFlag.AlignCenter)
-  delegate.setAutoFillBackground(true)
 
   def height = delegate.height
   def height_=(h: Int) = delegate.setFixedHeight(h)
@@ -35,4 +34,7 @@ class Widget(override val delegate: QWidget = new QWidget) extends QtDelegate[QW
     delegate.setBackgroundRole(colorRole)
 
   def focus() = delegate.setFocus()
+
+  def styleSheet_=(styleString: String) = delegate.setStyleSheet(styleString)
+  def styleSheet = delegate.styleSheet()
 }
