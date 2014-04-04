@@ -58,7 +58,7 @@ class SlickTagDb(dbPath: String) {
 
   def filesWithTag(tag: String): List[File] = {
     val pathsWithTag = database withDynTransaction {
-      val rowsWithTag = taggedFilesTable filter (_.tagName == tag)
+      val rowsWithTag = taggedFilesTable filter (_.tagName is tag) // "is" is a Column[_]'s "=="
       rowsWithTag map (_.path)
     }.list
 
