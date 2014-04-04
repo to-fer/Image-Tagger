@@ -1,7 +1,7 @@
 package gui
 
 import com.trolltech.qt.gui.QFrame
-import command.{AddTagCommand, QuitCommand, TagCommand}
+import command.{SkipCommand, AddTagCommand, QuitCommand, TagCommand}
 import qt.image.{SequentialImageViewer, Image}
 import qt.init.QtApp
 import qt.gui._
@@ -36,6 +36,7 @@ object GUI extends QtApp {
       imageWidget
     )
   }
+
   val tagDb = new SlickTagDb("db.sqlite")
   var knownTags = tagDb.tags match {
     case Some(tags) => tags.toSet
@@ -83,11 +84,19 @@ object GUI extends QtApp {
               imageHeight = screenHeight
             )
             viewer.showFirstImage()
+
             returnPressed = () => {
               val enteredCommand = onCommand()
 
+              def showNextImageIfExists() =
+                if (viewer.hasNext)
+                  viewer.showNextImage()
+                else
+                  errorMessage("All images have been tagged.")
+
               if (enteredCommand != "") {
                 enteredCommand match {
+                  case SkipCommand(_) => showNextImageIfExists()
                   case AddTagCommand(tag) => {
                     if (tag.contains(" "))
                       errorMessage("Tags cannot contain spaces.")
@@ -102,10 +111,7 @@ object GUI extends QtApp {
                     val imageFile = viewer.currentImageFile
                     val destFile = imageDest resolve imageFile.toPath.getFileName
                     tagDb.tagFile(destFile.toString, tags)
-                    if (viewer.hasNext)
-                      viewer.showNextImage()
-                    else
-                      errorMessage("All images have been tagged.")
+                    showNextImageIfExists()
                     Files.move(imageFile.toPath, destFile)
                   }
                   case "delete" => {
@@ -146,7 +152,8 @@ object GUI extends QtApp {
           else
             errorMessage("Invalid tag.")
         }
-      }}
+      }
+    }
     returnPressed = commandEntered
   }
 
