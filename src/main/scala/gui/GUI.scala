@@ -141,9 +141,9 @@ object GUI extends QtApp {
             case tag => {
               if (knownTags.contains(tag)) {
                 val gridWidget = new GridWidget
-                val imagesPerRow = 5
-                val imageWidth = screenWidth/imagesPerRow
-                val imageHeight = screenHeight/imagesPerRow
+                val ImagesPerRow = 5
+                val imageWidth = screenWidth/ImagesPerRow
+                val imageHeight = screenHeight/ImagesPerRow
                 val taggedImageFiles = tagDb.filesWithTag(tag)
                 taggedImageFiles foreach { f => {
                   val image = new Image(f.toString, imageWidth, imageHeight) {
