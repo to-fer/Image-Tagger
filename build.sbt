@@ -2,7 +2,6 @@ libraryDependencies ++= List (
   "com.typesafe.slick" %% "slick" % "latest.integration",
   "org.scalatest" %% "scalatest" % "latest.integration",
   "org.xerial" % "sqlite-jdbc" % "latest.integration",
-  "org.clapper" %% "grizzled-scala" % "latest.integration"
 )
 
 val platformDependentLibraries: List[ModuleID] = {
