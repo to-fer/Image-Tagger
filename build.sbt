@@ -1,7 +1,8 @@
 libraryDependencies ++= List (
   "com.typesafe.slick" %% "slick" % "latest.integration",
   "org.scalatest" %% "scalatest" % "latest.integration",
-  "org.xerial" % "sqlite-jdbc" % "latest.integration"
+  "org.xerial" % "sqlite-jdbc" % "latest.integration",
+  "org.clapper" %% "grizzled-scala" % "latest.integration"
 )
 
 val platformDependentLibraries: List[ModuleID] = {
@@ -18,7 +19,9 @@ val platformDependentLibraries: List[ModuleID] = {
       throw new RuntimeException("Unknown operating system.")
   val platform = osString + archBit
   val qtJambiVersion = if (platform == "win64") "4.5.2_01" else "4.6.3.2"
-  ("net.sf.qtjambi" % "qtjambi" % qtJambiVersion) :: ("net.sf.qtjambi" % s"qtjambi-base-$platform" % qtJambiVersion) :: ("net.sf.qtjambi" % s"qtjambi-platform-$platform" % qtJambiVersion) :: Nil
+  ("net.sf.qtjambi" % "qtjambi" % qtJambiVersion) ::
+    ("net.sf.qtjambi" % s"qtjambi-base-$platform" % qtJambiVersion) ::
+    ("net.sf.qtjambi" % s"qtjambi-platform-$platform" % qtJambiVersion) :: Nil
 }
 
 libraryDependencies ++= platformDependentLibraries
