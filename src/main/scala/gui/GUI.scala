@@ -140,10 +140,11 @@ object GUI extends QtApp {
             }
             case tag => {
               if (knownTags.contains(tag)) {
-                val taggedImageFiles = tagDb.filesWithTag(tag)
                 val gridWidget = new GridWidget
-                val imageWidth = screenWidth/5
-                val imageHeight = screenHeight/5
+                val imagesPerRow = 5
+                val imageWidth = screenWidth/imagesPerRow
+                val imageHeight = screenHeight/imagesPerRow
+                val taggedImageFiles = tagDb.filesWithTag(tag)
                 taggedImageFiles foreach { f => {
                   val image = new Image(f.toString, imageWidth, imageHeight) {
                     frameShape = QFrame.Shape.Box
