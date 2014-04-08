@@ -15,10 +15,7 @@ object GUI extends QtApp {
 
   // Non-GUI initialization stuff
   val tagDb = new SlickTagDb("db.sqlite")
-  var knownTags = tagDb.tags match {
-    case Some(tags) => tags.toSet
-    case None => throw new RuntimeException("Could not read tags from database.")
-  }
+  var knownTags = tagDb.tags
 
   val imageDir = Paths.get(System.getProperty("user.home"), "images")
   if (!Files.exists(imageDir))

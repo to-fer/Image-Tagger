@@ -6,6 +6,8 @@ import Database.dynamicSession
 import java.nio.file.{Files, Paths}
 
 class SlickTagDb(dbPath: String) {
+  private var _tags: Set[String] = _
+
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
     def tagName = column[String]("TAG_NAME", O.PrimaryKey)
     override def * = tagName
@@ -40,14 +42,17 @@ class SlickTagDb(dbPath: String) {
 
   def addTag(tagName: String): Unit = database withDynTransaction {
     tagTable += tagName
+    _tags = _tags + tagName
   }
 
-  def tags: Option[List[String]] = {
-    val tagList = database withDynTransaction {
-      for (row <- tagTable) yield row.tagName
-    }.list
-    if (tagList != null) Some(tagList)
-    else None
+  def tags: Set[String] = {
+    if (_tags.isEmpty) {
+      _tags = database withDynTransaction {
+        for (row <- tagTable) yield row.tagName
+      }.list.toSet
+    }
+
+    _tags
   }
 
   def tagFile(pathToTag: String, tagsToApply: Seq[String]): Unit =
