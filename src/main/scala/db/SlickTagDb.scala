@@ -41,8 +41,12 @@ class SlickTagDb(dbPath: String) {
     }
 
   def addTag(tagName: String): Unit = database withDynTransaction {
-    tagTable += tagName
-    _tags = _tags + tagName
+    if (!tags.contains(tagName)) {
+      tagTable += tagName
+      _tags = _tags + tagName
+    }
+    else
+      throw new IllegalArgumentException("That tag already exists!")
   }
 
   def tags: Set[String] = {
