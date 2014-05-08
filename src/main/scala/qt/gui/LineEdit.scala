@@ -6,6 +6,7 @@ class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget 
   private var returnPressedFunction: Option[() => Unit] = None
 
   def text = delegate.text
+  
   def text_=(text: String) =
     delegate.setText(text)
 
@@ -17,5 +18,6 @@ class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget 
     returnPressedFunction = Some(fn)
     delegate.returnPressed.connect(fn, "apply()")
   }
+
   def returnPressed: Option[() => Unit] = returnPressedFunction
 }
