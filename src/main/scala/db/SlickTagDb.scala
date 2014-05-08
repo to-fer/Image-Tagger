@@ -6,7 +6,7 @@ import Database.dynamicSession
 import java.nio.file.{Files, Paths}
 
 class SlickTagDb(dbPath: String) {
-  private var _tags: Set[String] = _
+  private var _tags: Set[String] = Set.empty[String]
 
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
     def tagName = column[String]("TAG_NAME", O.PrimaryKey)
