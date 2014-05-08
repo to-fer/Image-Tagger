@@ -107,10 +107,10 @@ object GUI extends QtApp {
                           tagDb.addTag(tag)
                         }
                       }
-                      case TagCommand(tags) if (tags.forall(knownTags.contains(_))) => {
+                      case TagCommand(tags) if (tags.forall(knownTags.contains)) => {
                         val imageFile = viewer.currentImageFile
                         val destFile = imageDest resolve imageFile.toPath.getFileName
-                        tagDb.tagFile(destFile.toString, tags)
+                        tagDb.tagFile(destFile, tags)
                         showNextImageIfExists()
                         Files.move(imageFile.toPath, destFile)
                       }
