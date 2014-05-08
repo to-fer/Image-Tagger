@@ -55,11 +55,16 @@ class SlickTagDb(dbPath: String) {
     _tags
   }
 
-  def tagFile(pathToTag: Path, tagsToApply: Seq[String]): Unit =
-    database withDynTransaction {
-      val rowsToAdd = tagsToApply.map((pathToTag.toString, _))
-      taggedFilesTable ++= rowsToAdd
-    }
+  def tagFile(pathToTag: Path, tagsToApply: Seq[String]): Unit = {
+    if (tagsToApply.forall(tags.contains))
+      database withDynTransaction {
+        val rowsToAdd = tagsToApply.map((pathToTag.toString, _))
+        taggedFilesTable ++= rowsToAdd
+      }
+    else
+      throw new IllegalArgumentException("You cannot tag a file with a tag that doesn't exist!")
+  }
+
 
   def tagFile(pathToTag: Path, tagToApply: String): Unit =
     tagFile(pathToTag, List(tagToApply))
