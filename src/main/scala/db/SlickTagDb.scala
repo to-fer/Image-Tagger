@@ -3,7 +3,7 @@ package db
 import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Path, Files, Paths}
 
 class SlickTagDb(dbPath: String) {
   private var _tags: Set[String] = Set.empty[String]
@@ -55,11 +55,14 @@ class SlickTagDb(dbPath: String) {
     _tags
   }
 
-  def tagFile(pathToTag: String, tagsToApply: Seq[String]): Unit =
+  def tagFile(pathToTag: Path, tagsToApply: Seq[String]): Unit =
     database withDynTransaction {
-      val rowsToAdd = tagsToApply.map((pathToTag, _))
+      val rowsToAdd = tagsToApply.map((pathToTag.toString, _))
       taggedFilesTable ++= rowsToAdd
     }
+
+  def tagFile(pathToTag: Path, tagToApply: String): Unit =
+    tagFile(pathToTag, List(tagToApply))
 
   def filesWithTag(tag: String): List[File] = {
     val pathsWithTag = database withDynTransaction {
