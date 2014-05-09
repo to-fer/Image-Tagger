@@ -10,6 +10,7 @@ class StackedWidget extends Widget with Layout {
 
   def stackingMode_=(stackingMode: StackingMode) =
     stackedLayout.setStackingMode(stackingMode)
+
   def stackingMode = stackedLayout.stackingMode
 
   def currentWidget_=(w: Widget) = {

@@ -9,9 +9,50 @@ import java.nio.file.{Files, Paths}
 import qt.util.Screen
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
-import db.SlickTagDb
+import tag.db.SlickTagDb
+import event.{CommandListener, CommandHandler}
 
-object GUI extends QtApp {
+class MainWindow(commandListener: CommandListener) extends Window {
+  title = "Tagger"
+  maximized = true
+
+  private val commandLineEdit = new LineEdit {
+    width = 400
+    height = 25
+    alignment = List(AlignmentFlag.AlignHCenter, AlignmentFlag.AlignBottom)
+    styleSheet = "background: white;"
+    focus()
+  }
+  commandLineEdit.returnPressed = commandListener.commandEntered
+  commandListener.lineEdit = commandLineEdit
+
+  private val (screenWidth, screenHeight) = Screen.size
+  
+  private val displayStack = new StackedWidget {
+    width = screenWidth
+    height = screenHeight
+    stackingMode = StackingMode.StackOne
+  }
+  
+  private var _viewMode: Widget = _
+
+  def viewMode = _viewMode
+  
+  def viewMode_=(modeWidget: Widget): Unit = {
+    if (!displayStack.content.contains(modeWidget))
+      displayStack += modeWidget
+    displayStack.currentWidget = modeWidget
+    _viewMode = modeWidget
+  }
+
+  content = List(
+    new Container(commandLineEdit),
+    new Container(displayStack)
+  )
+}
+
+/*
+object MainWindow extends QtApp {
 
   // Non-GUI initialization stuff
   val tagDb = new SlickTagDb("db.sqlite")
@@ -161,3 +202,4 @@ object GUI extends QtApp {
     )
   }
 }
+*/

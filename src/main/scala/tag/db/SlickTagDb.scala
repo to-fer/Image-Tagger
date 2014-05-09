@@ -1,4 +1,4 @@
-package db
+package tag.db
 
 import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
@@ -68,7 +68,6 @@ class SlickTagDb(dbPath: String) {
     else
       throw new IllegalArgumentException("You cannot tag a file with a tag that doesn't exist!")
   }
-
 
   def tagFile(pathToTag: Path, tagToApply: String): Unit =
     tagFile(pathToTag, List(tagToApply))

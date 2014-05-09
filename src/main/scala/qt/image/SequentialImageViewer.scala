@@ -49,7 +49,6 @@ class SequentialImageViewer(layout: Layout, imageFiles: Seq[File], imageWidth: I
       layout -= currentImage
     }
 
-
     layout += image
     currentImage = image
   }

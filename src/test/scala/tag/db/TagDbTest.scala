@@ -1,4 +1,4 @@
-package db
+package tag.db
 
 import org.specs2.mutable._
 import org.specs2.ScalaCheck

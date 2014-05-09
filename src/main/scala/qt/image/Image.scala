@@ -7,15 +7,6 @@ import com.trolltech.qt.core.Qt.{AspectRatioMode, TransformationMode}
 import qt.gui.Label
 
 object Image {
-  def imageFilesIn(path: String): Seq[File] = {
-    val files = new File(path).listFiles
-    if (files == null)
-      return List[File]()
-
-    val imageFiles = files filter (f => isImage(f.toString))
-    imageFiles
-  }
-
   def isImage(path: String) = {
     val imageRegex = "(\\.(png|PNG|jpg|JPG|jpeg|JPEG|gif|GIF|apng|APNG))$".r
     imageRegex.findFirstIn(path).isDefined
