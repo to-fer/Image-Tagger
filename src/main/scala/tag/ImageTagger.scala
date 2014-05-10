@@ -1,5 +1,0 @@
-package tag
-
-class ImageTagger {
-
-}
