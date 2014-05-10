@@ -10,7 +10,7 @@ trait QtApp extends App {
   val mainWindow: Window
 
   override def delayedInit(body: => Unit) = {
-    QApplication.initialize(new Array[String](0))
+    QApplication.initialize(if (args == null) Array.empty[String] else args)
     body
     mainWindow.show()
     QApplication.exec()
