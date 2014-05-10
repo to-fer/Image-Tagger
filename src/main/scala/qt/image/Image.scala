@@ -5,6 +5,9 @@ import java.io.File
 import com.trolltech.qt.core.QSize
 import com.trolltech.qt.core.Qt.{AspectRatioMode, TransformationMode}
 import qt.gui.Label
+import scala.concurrent.Future
+import qt.Application.executionContext
+import scala.util.Success
 
 object Image {
   def isImage(path: String) = {
@@ -20,9 +23,13 @@ object Image {
   def makeLabel(imagePath: String, width: Int, height: Int) = {
     val label = new QLabel
     if (isAnimated(imagePath))
-      label.setMovie(Movie.movie(imagePath, width, height))
+      Movie.movie(imagePath, width, height).andThen {
+        case Success(mov) => label.setMovie(mov)
+      }
     else
-      label.setPixmap(Pixmap.pixmap(imagePath, width, height))
+      Pixmap.pixmap(imagePath, width, height).andThen {
+        case Success(pix) => label.setPixmap(pix)
+      }
     
     label
   }
@@ -64,14 +71,19 @@ object Image {
 class Image(val path: String) extends Label {
   require(new File(path).exists)
 
-  val movie: Option[QMovie] = if (Image.isAnimated(path)) Some(Movie.movie(path)) else None
-  private var _pixmap: Option[QPixmap] = if (movie.isEmpty) Some(new QPixmap(path)) else None
-  def pixmap = _pixmap
+  private val movie: Option[Future[QMovie]] =
+    if (Image.isAnimated(path)) Some(Movie.movie(path)) else None
+  private var pixmap: Option[Future[QPixmap]] =
+    if (movie.isEmpty) Some( Future { new QPixmap(path) }) else None
 
-  if (!movie.isEmpty)
-    delegate.setMovie(movie.get)
-  else if (!pixmap.isEmpty)
-    delegate.setPixmap(pixmap.get)
+  if (movie.isDefined)
+    movie.get.andThen {
+      case Success(mov) => delegate.setMovie(mov)
+    }
+  else if (pixmap.isDefined)
+    pixmap.get.andThen {
+      case Success(pix) => delegate.setPixmap(pix)
+    }
   else
     throw new IllegalArgumentException(path + " is a null image!")
 
@@ -79,25 +91,42 @@ class Image(val path: String) extends Label {
     this(p)
     width = w
     height = h
+
     if (movie.isDefined) {
-      movie.get.setScaledSize(new QSize(w, h))
-      delegate.setMovie(movie.get)
+      movie.get.andThen {
+        case Success(mov) => Future {
+          mov.setScaledSize(new QSize(w, h))
+          delegate.setMovie(mov)
+        }
+      }
     }
-    _pixmap = if(_pixmap.isDefined) {
-      val scaledPixmap = _pixmap.get.scaled(w, h,
-        AspectRatioMode.KeepAspectRatio,
-        TransformationMode.SmoothTransformation)
-      delegate.setPixmap(scaledPixmap)
-      Some(scaledPixmap)
+
+    pixmap = if(pixmap.isDefined) {
+      Some(pixmap.get.map {
+        pix => {
+          pix.scaled(w, h,
+            AspectRatioMode.KeepAspectRatio,
+            TransformationMode.SmoothTransformation)
+        }
+      }.andThen {
+        case Success(pix) => delegate.setPixmap(pix)
+      })
     } else None
   }
 
   def dispose() = {
-    if (movie.isEmpty)
-      pixmap.get.dispose()
+
+    if (pixmap.isDefined)
+      pixmap.get.andThen {
+        case Success(pix) => pix.dispose()
+      }
     else {
-      movie.get.stop()
-      movie.get.dispose()
+      movie.get.andThen {
+        case Success(mov) => {
+          mov.stop()
+          mov.dispose()
+        }
+      }
     }
 
     delegate.dispose()

@@ -1,16 +1,10 @@
 package gui
 
-import com.trolltech.qt.gui.QFrame
-import command.{SkipCommand, AddTagCommand, QuitCommand, TagCommand}
-import qt.image.{SequentialImageViewer, Image}
-import qt.init.QtApp
 import qt.gui._
-import java.nio.file.{Files, Paths}
 import qt.util.Screen
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
-import tag.db.SlickTagDb
-import event.{CommandListener, CommandHandler}
+import event.CommandListener
 
 class MainWindow(commandListener: CommandListener) extends Window {
   title = "Tagger"

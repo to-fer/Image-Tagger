@@ -2,6 +2,8 @@ package event
 
 import qt.gui.LineEdit
 import command._
+import qt.Application.executionContext
+import scala.concurrent.Future
 
 class CommandListener {
 
@@ -21,7 +23,7 @@ class CommandListener {
 
   def lineEdit_=(le: LineEdit) = _lineEdit = le
 
-  def commandEntered(): Unit = {
+  def commandEntered(): Unit = Future {
     val enteredCommand = lineEdit.text
     lineEdit.text = ""
 
@@ -42,5 +44,4 @@ class CommandListener {
       case ModeSwitch => modeSwitchHandler.handleCommand(enteredCommand)
     }
   }
-
 }

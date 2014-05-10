@@ -3,11 +3,8 @@ package event.mode
 import event.CommandHandler
 import command._
 import java.nio.file.{Path, Files}
-import qt.image.{Image, SequentialImageViewer}
 import command.Error
 import tag.db.SlickTagDb
-import scala.collection.mutable.ArrayBuffer
-import java.io.File
 import image.{UntaggedImages, ImageFiles}
 
 class TagMode(untaggedImages: UntaggedImages,
