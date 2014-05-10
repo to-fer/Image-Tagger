@@ -8,7 +8,7 @@ import event.mode._
 import event.CommandListener
 import qt.gui.{StackedWidget, Widget}
 import qt.util.Screen
-import image.UntaggedImages
+import qt.image.UntaggedImages
 import scala.Some
 
 object Main extends QtApp {

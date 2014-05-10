@@ -8,17 +8,9 @@ import qt.gui.Label
 import scala.concurrent.Future
 import qt.Application.executionContext
 import scala.util.Success
+import ImageFiles._
 
 object Image {
-  def isImage(path: String) = {
-    val imageRegex = "(\\.(png|PNG|jpg|JPG|jpeg|JPEG|gif|GIF|apng|APNG))$".r
-    imageRegex.findFirstIn(path).isDefined
-  }
-
-  def isAnimated(path: String) = {
-    val animatedRegex = "(\\.(gif|GIF|apng|APNG))$".r
-    animatedRegex.findFirstIn(path).isDefined
-  }
 
   def makeLabel(imagePath: String, width: Int, height: Int) = {
     val label = new QLabel
@@ -72,7 +64,7 @@ class Image(val path: String) extends Label {
   require(new File(path).exists)
 
   private val movie: Option[Future[QMovie]] =
-    if (Image.isAnimated(path)) Some(Movie.movie(path)) else None
+    if (isAnimated(path)) Some(Movie.movie(path)) else None
   private var pixmap: Option[Future[QPixmap]] =
     if (movie.isEmpty) Some( Future { new QPixmap(path) }) else None
 
@@ -85,7 +77,7 @@ class Image(val path: String) extends Label {
       case Success(pix) => delegate.setPixmap(pix)
     }
   else
-    throw new IllegalArgumentException(path + " is a null image!")
+    throw new IllegalArgumentException(path + " is a null qt.image!")
 
   def this(p: String, w: Int, h: Int) = {
     this(p)
