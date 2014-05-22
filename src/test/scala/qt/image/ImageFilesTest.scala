@@ -17,13 +17,17 @@ class ImageFilesTest extends ImageFileSpec {
     }
 
     "imageFilesIn('directory path with images')" in {
-      val testFilePaths = ImageFiles.imageExtentions.map(ext => testImageDir.resolve(s"$ext-test.$ext"))
+      // Filter out all uppercase extensions because they aren't differentiated from
+      // a file with the same name but with a lowercase extension when they're created.
+      val expectedImagePaths =
+        ImageFiles.imageExtensions.filter(str => str.charAt(str.length - 1).isLower).map(ext => testImageDir.resolve(s"$ext-test.$ext"))
+      val testFilePaths = expectedImagePaths ++ Seq("not-an-image.txt", "not-an-image.doc").map(testImageDir.resolve)
       val testFiles = testFilePaths.map(_.toFile)
       testFiles.foreach(_.createNewFile())
 
       val imageFiles = ImageFiles.imageFilesIn(testImageDir.toString)
-      val containsAll = imageFiles.forall(testFiles.contains)
-      containsAll mustEqual true
+      val expectedImageFiles = expectedImagePaths.map(_.toFile)
+      expectedImageFiles.sorted.sameElements(imageFiles.sorted) mustEqual true
     }
 
     "isAnimated('path that denotes an animated image file')" in {
@@ -35,6 +39,7 @@ class ImageFilesTest extends ImageFileSpec {
       val testFilePaths = List("test.png", "test.jpg")
       testFilePaths.forall(!ImageFiles.isAnimated(_)) mustEqual true
     }
+
   }
 }
 
