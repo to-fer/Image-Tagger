@@ -8,8 +8,8 @@ import event.mode._
 import event.CommandListener
 import qt.gui.{StackedWidget, Widget}
 import qt.util.Screen
-import qt.image.UntaggedImages
 import scala.Some
+import image.UntaggedImages
 
 object Main extends QtApp {
   val commandListener = new CommandListener

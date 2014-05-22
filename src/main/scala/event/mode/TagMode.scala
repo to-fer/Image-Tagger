@@ -5,7 +5,8 @@ import command._
 import java.nio.file.{Path, Files}
 import command.Error
 import tag.db.SlickTagDb
-import image.{UntaggedImages, ImageFiles}
+import qt.image.ImageFiles
+import image.UntaggedImages
 
 class TagMode(untaggedImages: UntaggedImages,
               tagDb: SlickTagDb,
