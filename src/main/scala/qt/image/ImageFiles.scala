@@ -4,21 +4,21 @@ import java.io.File
 
 object ImageFiles {
 
-  lazy val animatedImageExtentions = "gif" :: "GIF" :: "apng" :: "APNG" :: Nil
-  lazy val imageExtentions = "png" :: "PNG" :: "gif" :: "GIF" :: "jpg" :: "JPG" :: animatedImageExtentions
+  lazy val animatedImageExtensions = "gif" :: "GIF" :: "apng" :: "APNG" :: Nil
+  lazy val imageExtensions = "png" :: "PNG" :: "jpg" :: "JPG" :: animatedImageExtensions
 
   def isImage(path: String) = {
-    val imageRegex = fileExtentionRegex(imageExtentions)
+    val imageRegex = fileExtensionRegex(imageExtensions)
     imageRegex.findFirstIn(path).isDefined
   }
 
   def isAnimated(path: String) = {
-    val animatedRegex = fileExtentionRegex(animatedImageExtentions)
+    val animatedRegex = fileExtensionRegex(animatedImageExtensions)
     animatedRegex.findFirstIn(path).isDefined
   }
 
-  private def fileExtentionRegex(extentions: List[String]) = {
-    val imageExtStr = extentions.mkString("|")
+  private def fileExtensionRegex(extensions: List[String]) = {
+    val imageExtStr = extensions.mkString("|")
     ("(\\.(" + imageExtStr + "))$").r
   }
 
