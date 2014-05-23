@@ -3,9 +3,9 @@ package image
 import java.io.File
 import qt.image.Image
 import qt.util.Screen
+import event.Observable
 
-class UntaggedImages {
-  private var observerList = Seq.empty[() => Unit]
+class UntaggedImages extends Observable {
   private var _untaggedImageFiles = Seq.empty[File]
   private var imageIndex: Int = -1 // Starts at -1, since it will be 0 after the first call to nextImage()
   private var preloadedImage: Option[Image] = None
@@ -50,10 +50,4 @@ class UntaggedImages {
   def currentImage = _currentImage
 
   def previousImage = _previousImage
-
-  def notifyObservers() = 
-    observerList.foreach(_())
-  
-  def addObserver(observer: () => Unit): Unit = 
-      observerList = observer :: observerList
 }
