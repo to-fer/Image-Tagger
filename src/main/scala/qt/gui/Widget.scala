@@ -37,4 +37,6 @@ class Widget(val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
 
   def styleSheet_=(styleString: String) = delegate.setStyleSheet(styleString)
   def styleSheet = delegate.styleSheet()
+
+  def dispose(): Unit = delegate.dispose()
 }
