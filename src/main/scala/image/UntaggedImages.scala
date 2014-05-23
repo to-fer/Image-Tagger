@@ -5,7 +5,7 @@ import qt.image.Image
 import qt.util.Screen
 
 class UntaggedImages {
-  private var observerList = List.empty[() => Unit]
+  private var observerList = Seq.empty[() => Unit]
   private var _untaggedImageFiles = Seq.empty[File]
   private var imageIndex: Int = -1 // Starts at -1, since it will be 0 after the first call to nextImage()
   private var preloadedImage: Option[Image] = None
