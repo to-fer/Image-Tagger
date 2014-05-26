@@ -1,13 +1,12 @@
 package event.mode
 
 import qt.gui.Widget
+import event.Observable
 
 
-class ActiveMode {
-
+class ActiveMode extends Observable {
   private var _currentMode: Option[Mode] = None
   private var _currentModeView: Option[Widget] = None
-  private var observerList = List.empty[() => Unit]
   
   def currentMode = _currentMode
 
@@ -18,11 +17,4 @@ class ActiveMode {
     _currentModeView = Some(newView)
     notifyObservers()
   }
-
-  private def notifyObservers(): Unit = 
-    observerList.foreach(_())
-  
-  def addObserver(observer: () => Unit): Unit =
-    observerList = observer :: observerList 
-  
 }
