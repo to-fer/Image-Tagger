@@ -1,32 +1,20 @@
 package event.mode
 
 import event.CommandHandler
-import command.{Error, QuitCommand, CommandResult}
+import command._
+import command.Error
+import scala.Some
 
-class ModeSwitchHandler(modeSwitcher: ModeSwitcher, modes: Seq[Mode]) extends CommandHandler {
-  override def handleCommand(cmd: String): CommandResult = {
-    modes.find(_.name == cmd) match {
-      case Some(mode) => {
-        val result = mode.start()
-        modeSwitcher.switch(mode)
-        result
-      }
-      case None => {
-        cmd match {
-          case QuitCommand(_) => {
-            modes.find(_.name == "search") match {
-              case Some(searchMode) => {
-                val result = searchMode.start()
-                modeSwitcher.switch(searchMode)
-                result
-              }
-              case None => throw new Exception("There is no search mode!")
-            }
-          }
-          case unknownCommand: String =>
-            Error(s"Unknown command: $unknownCommand")
-        }
-      }
-    }
+class ModeSwitchHandler(modeSwitcher: ModeSwitcher, searchMode: SearchMode, tagMode: TagMode) extends CommandHandler {
+  private def startAndSwitchMode(mode: Mode): CommandResult = {
+    val result = mode.start()
+    modeSwitcher.switch(mode)
+    result
+  }
+
+  override def handleCommand(cmd: String): CommandResult = cmd match {
+    case TagModeCommand(_) => startAndSwitchMode(tagMode)
+    case SearchModeCommand(_) => startAndSwitchMode(searchMode)
+    case QuitCommand(_) => startAndSwitchMode(searchMode)
   }
 }
