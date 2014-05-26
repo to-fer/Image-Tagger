@@ -7,7 +7,7 @@ import event.Observable
 
 class UntaggedImages extends Observable {
   private var _untaggedImageFiles = Seq.empty[File]
-  private var imageIndex: Int = 0
+  private var imageIndex: Int = -1
   private var preloadedImage: Option[Image] = None
   private var _currentImage: Image = _
   private var _previousImage: Option[Image] = None
@@ -15,7 +15,9 @@ class UntaggedImages extends Observable {
 
   def untaggedImageFiles_=(files: Seq[File]): Unit = {
     _untaggedImageFiles = files
-    notifyObservers()
+    // Starts at -1 so nextImage() sets the correct image as the current image (the one at index 0)
+    imageIndex = -1
+    nextImage()
   }
 
   def untaggedImageFiles = _untaggedImageFiles
