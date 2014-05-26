@@ -1,10 +1,10 @@
 package event
 
 trait Observable {
-  private val observers = Seq.empty[() => Unit]
+  private var observers = Seq.empty[() => Unit]
 
   def addObserver(observer: () => Unit) =
-    observers :+ observer
+    observers = Seq(observer) ++ observers
 
   protected def notifyObservers(): Unit =
     observers.foreach(_())
