@@ -15,9 +15,7 @@ class TagMode(untaggedImages: UntaggedImages,
               override val name: String) extends Mode {
 
   override val commandHandler = new CommandHandler {
-    override def handleCommand(cmd: String): CommandResult = {
-
-      cmd match {
+    override def handleCommand(cmd: String): CommandResult = cmd match {
         case SkipCommand(_) => {
           untaggedImages.currentImage.dispose()
           displayNextImageIfExists()
@@ -53,7 +51,6 @@ class TagMode(untaggedImages: UntaggedImages,
         }
         case unknownCommand: String =>
           Error(s"Unknown command: $unknownCommand")
-      }
     }
   }
 
@@ -61,7 +58,7 @@ class TagMode(untaggedImages: UntaggedImages,
     val imageFiles = ImageFiles.imageFilesIn(imageSource.toString)
     if (imageFiles != null && !imageFiles.isEmpty) {
       untaggedImages.untaggedImageFiles = imageFiles
-      displayNextImageIfExists()
+      OK
     }
     else
       DisplayMessage("There are no images to tag.")
