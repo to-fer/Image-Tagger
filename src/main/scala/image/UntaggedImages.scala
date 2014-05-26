@@ -7,15 +7,17 @@ import event.Observable
 
 class UntaggedImages extends Observable {
   private var _untaggedImageFiles = Seq.empty[File]
-  private var imageIndex: Int = -1 // Starts at -1, since it will be 0 after the first call to nextImage()
+  private var imageIndex: Int = 0
   private var preloadedImage: Option[Image] = None
   private var _currentImage: Image = _
   private var _previousImage: Option[Image] = None
   private val (screenWidth, screenHeight) = Screen.size
 
-  def untaggedImageFiles_=(files: Seq[File]): Unit = 
+  def untaggedImageFiles_=(files: Seq[File]): Unit = {
     _untaggedImageFiles = files
-    
+    notifyObservers()
+  }
+
   def untaggedImageFiles = _untaggedImageFiles
   
   def nextImage() = {
