@@ -106,7 +106,7 @@ class Image(val path: String) extends Label {
     } else None
   }
 
-  def dispose() = {
+  override def dispose() = {
 
     if (pixmap.isDefined)
       pixmap.get.andThen {
