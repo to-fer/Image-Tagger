@@ -30,6 +30,7 @@ class TagMode(untaggedImages: UntaggedImages,
             OK
           }
         }
+        case SearchModeCommand(_) => ModeSwitch
         case "delete" => {
           untaggedImages.currentImage.dispose()
           untaggedImages.currentImageFile.delete()
