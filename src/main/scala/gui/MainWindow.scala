@@ -28,15 +28,15 @@ class MainWindow(commandListener: CommandListener) extends Window {
     stackingMode = StackingMode.StackOne
   }
   
-  private var _viewMode: Widget = _
+  private var _currentModeView: Widget = _
 
-  def viewMode = _viewMode
+  def currentModeView = _currentModeView
   
-  def viewMode_=(modeWidget: Widget): Unit = {
+  def currentModeView_=(modeWidget: Widget): Unit = {
     if (!displayStack.content.contains(modeWidget))
       displayStack += modeWidget
     displayStack.currentWidget = modeWidget
-    _viewMode = modeWidget
+    _currentModeView = modeWidget
   }
 
   content = List(
