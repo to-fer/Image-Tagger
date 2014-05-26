@@ -6,13 +6,14 @@ import qt.gui.Window
 /**
  * Convenient marker trait making use of DelayedInit to perform Qt initialization and execution.
  */
-trait QtApp extends App {
-  val mainWindow: Window
+trait QtApp {
+  var args = Array.empty[String]
+  def start(): Unit
 
-  override def delayedInit(body: => Unit) = {
-    QApplication.initialize(if (args == null) Array.empty[String] else args)
-    body
-    mainWindow.show()
+  def main(args: Array[String]) = {
+    this.args = args
+    QApplication.initialize(args)
+    start()
     QApplication.exec()
   }
 }
