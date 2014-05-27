@@ -1,6 +1,6 @@
 package event.mode
 
-import java.nio.file.Path
+import java.nio.file.{Files, Path}
 import tag.db.SlickTagDb
 import command._
 import event.CommandHandler
@@ -22,7 +22,12 @@ class SearchMode(imageSource: Path,
         if (tagDb.tags.contains(tag)) {
           val taggedImageFiles = tagDb.filesWithTag(tag)
           if (!taggedImageFiles.isEmpty) {
-            searchResults.imagePaths = taggedImageFiles.map(_.toString)
+            val existingTaggedImageFiles = taggedImageFiles.filter(_.exists())
+            val notExistingTaggedImageFiles = taggedImageFiles.filter(!_.exists())
+            if (!notExistingTaggedImageFiles.isEmpty)
+              logger.warn(s"Search results contain non-existent files: $notExistingTaggedImageFiles.")
+
+            searchResults.imagePaths = existingTaggedImageFiles.map(_.toString)
             OK
           }
           else
