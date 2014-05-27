@@ -22,7 +22,7 @@ class SearchModeView(imagesPerRow: Int = 5) {
       }
     })
     val imageGridWidget = new GridWidget
-    shownImages.foreach(imageGridWidget +=)
+    imageGridWidget.content = shownImages
     viewWidget.content = imageGridWidget
   }
 
