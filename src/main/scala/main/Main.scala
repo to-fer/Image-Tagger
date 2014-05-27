@@ -80,7 +80,6 @@ object Main extends QtApp with LazyLogging {
       logger.debug("Showing search results of size " + searchResults.imagePaths.length)
       searchModeView.show(searchResults.imagePaths)
     }
-
     searchResults.addObserver(searchObserver)
 
     val modeSwitchHandler = new ModeSwitchHandler(modeSwitcher, searchMode = searchMode, tagMode = tagMode)
