@@ -6,12 +6,13 @@ import command._
 import event.CommandHandler
 import image.SearchResults
 import command.Error
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 class SearchMode(imageSource: Path,
                  tagDb: SlickTagDb,
                  searchResults: SearchResults,
                  val imagesPerRow: Int,
-                 override val name: String) extends Mode {
+                 override val name: String) extends Mode with LazyLogging {
 
   override val commandHandler: CommandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {
@@ -32,6 +33,10 @@ class SearchMode(imageSource: Path,
       }
     }
   }
-  override def start(): CommandResult =
+
+  override def start(): CommandResult = {
+    logger.debug("Search mode starting.")
     OK
+  }
+
 }

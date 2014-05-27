@@ -7,12 +7,13 @@ import command.Error
 import tag.db.SlickTagDb
 import qt.image.ImageFiles
 import image.UntaggedImages
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 class TagMode(untaggedImages: UntaggedImages,
               tagDb: SlickTagDb,
               imageSource: Path,
               imageDest: Path,
-              override val name: String) extends Mode {
+              override val name: String) extends Mode with LazyLogging {
 
   override val commandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {
@@ -56,6 +57,8 @@ class TagMode(untaggedImages: UntaggedImages,
   }
 
   def start() = {
+    logger.debug("Tag mode starting.")
+
     val imageFiles = ImageFiles.imageFilesIn(imageSource.toString)
     if (imageFiles != null && !imageFiles.isEmpty) {
       untaggedImages.untaggedImageFiles = imageFiles

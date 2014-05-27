@@ -1,7 +1,7 @@
 package main
 
 import tag.db.SlickTagDb
-import java.nio.file.{Files, Paths}
+import java.nio.file.{Path, Files, Paths}
 import qt.init.QtApp
 import gui.{SearchModeView, MainWindow}
 import event.mode._
@@ -10,18 +10,23 @@ import qt.gui.{StackedWidget, Widget}
 import qt.util.Screen
 import scala.Some
 import image.{SearchResults, UntaggedImages}
+import com.typesafe.scalalogging.slf4j.{LazyLogging, Logger}
+import org.slf4j.LoggerFactory
 
-object Main extends QtApp {
+object Main extends QtApp with LazyLogging {
   override def start() = {
     val commandListener = new CommandListener
     val mainWindow = new MainWindow(commandListener)
 
+    def createIfNotExists(path: Path) =
+      if (!Files.exists(path)) {
+        logger.info(s"$path does not exist. Creating.")
+        Files.createDirectory(path)
+      }
     val imageSourceDir = Paths.get(args(0))
-    if (!Files.exists(imageSourceDir))
-      Files.createDirectory(imageSourceDir)
+    createIfNotExists(imageSourceDir)
     val imageDestDir = imageSourceDir resolve "Tagged"
-    if (!Files.exists(imageDestDir))
-      Files.createDirectory(imageDestDir)
+    createIfNotExists(imageDestDir)
 
     val tagDb = new SlickTagDb("tag-db.sqlite")
     val untaggedImages = new UntaggedImages
@@ -66,12 +71,16 @@ object Main extends QtApp {
           tagModeView -= image
         case None =>
       }
+      logger.debug(s"Showing next image $untaggedImages")
       tagModeView += untaggedImages.currentImage
     }
     untaggedImages.addObserver(showNextImageObserver)
 
-    val searchObserver = () =>
+    val searchObserver = () => {
+      logger.debug("Showing search results of size " + searchResults.imagePaths.length)
       searchModeView.show(searchResults.imagePaths)
+    }
+
     searchResults.addObserver(searchObserver)
 
     val modeSwitchHandler = new ModeSwitchHandler(modeSwitcher, searchMode = searchMode, tagMode = tagMode)

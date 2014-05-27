@@ -123,4 +123,6 @@ class Image(val path: String) extends Label {
 
     delegate.dispose()
   }
+
+  override def toString = path
 }

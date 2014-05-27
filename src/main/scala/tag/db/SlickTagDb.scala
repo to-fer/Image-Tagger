@@ -4,8 +4,9 @@ import java.io.File
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
 import java.nio.file.{Path, Files, Paths}
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
-class SlickTagDb(dbPath: String) {
+class SlickTagDb(dbPath: String) extends LazyLogging {
   private var _tags: Set[String] = Set.empty[String]
 
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
@@ -33,14 +34,19 @@ class SlickTagDb(dbPath: String) {
   }
   private val taggedFilesTable = TableQuery[TaggedFiles]
 
+  if (!Files.exists(Paths.get(dbPath)))
+    logger.info(s"Path to database $dbPath doesn't exist. Creating.")
   private lazy val database = Database.forURL(s"jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
 
-  if (!Files.exists(Paths.get(dbPath)))
+  if (!Files.exists(Paths.get(dbPath))) {
+    logger.info("Initializing database.")
     database withDynSession {
       (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
     }
+  }
 
   def addTag(tagName: String): Unit = database withDynTransaction {
+    logger.info(s"Adding tag $tagName.")
     if (!tags.contains(tagName)) {
       tagTable += tagName
       _tags = _tags + tagName
@@ -60,11 +66,13 @@ class SlickTagDb(dbPath: String) {
   }
 
   def tagFile(pathToTag: Path, tagsToApply: Seq[String]): Unit = {
-    if (tagsToApply.forall(tags.contains))
+    if (tagsToApply.forall(tags.contains)) {
+      logger.info(s"Tagging $pathToTag with $tagsToApply.")
       database withDynTransaction {
         val rowsToAdd = tagsToApply.map((pathToTag.toString, _))
         taggedFilesTable ++= rowsToAdd
       }
+    }
     else
       throw new IllegalArgumentException("You cannot tag a file with a tag that doesn't exist!")
   }
