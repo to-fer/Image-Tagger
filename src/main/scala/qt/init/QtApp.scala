@@ -3,7 +3,7 @@ package qt.init
 import com.trolltech.qt.gui.QApplication
 
 /**
- * Convenient marker trait making use of DelayedInit to perform Qt initialization and execution.
+ * Convenience trait used to initialize Qt.
  */
 trait QtApp {
   var args = Array.empty[String]
