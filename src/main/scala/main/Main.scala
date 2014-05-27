@@ -71,8 +71,9 @@ object Main extends QtApp with LazyLogging {
           tagModeView -= image
         case None =>
       }
-      logger.debug(s"Showing next image $untaggedImages")
-      tagModeView += untaggedImages.currentImage
+      val current = untaggedImages.currentImage
+      logger.debug(s"Showing next image $current")
+      tagModeView += current
     }
     untaggedImages.addObserver(showNextImageObserver)
 
