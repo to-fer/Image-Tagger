@@ -3,7 +3,7 @@ package qt.image
 import com.trolltech.qt.gui._
 import java.io.File
 import com.trolltech.qt.core.{Qt, QSize}
-import com.trolltech.qt.core.Qt.{AspectRatioMode, TransformationMode}
+import com.trolltech.qt.core.Qt.{AlignmentFlag, AspectRatioMode, TransformationMode}
 import qt.gui.Label
 import scala.concurrent.Future
 import qt.Application.executionContext
@@ -48,6 +48,9 @@ object Image {
 class Image(val path: String) extends Label {
   require(new File(path).exists)
 
+  // Alignment defaults to center
+  alignment = AlignmentFlag.AlignCenter
+
   private val movie: Option[Future[QMovie]] =
     if (isAnimated(path)) Some(Movie.movie(path)) else None
   private var pixmap: Option[Future[QPixmap]] =
@@ -89,6 +92,16 @@ class Image(val path: String) extends Label {
         case Success(pix) => delegate.setPixmap(pix)
       })
     } else None
+  }
+
+  override def alignment_=(alignmentFlags: Seq[AlignmentFlag]) = {
+    super.alignment_=(alignmentFlags)
+    delegate.setAlignment(alignmentFlags:_*)
+  }
+
+  override def alignment_=(alignmentFlag: AlignmentFlag) = {
+    super.alignment_=(alignmentFlag)
+    delegate.setAlignment(alignmentFlag)
   }
 
   override def dispose() = {
