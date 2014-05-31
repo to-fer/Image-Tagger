@@ -2,7 +2,7 @@ package qt.image
 
 import com.trolltech.qt.gui._
 import java.io.File
-import com.trolltech.qt.core.QSize
+import com.trolltech.qt.core.{Qt, QSize}
 import com.trolltech.qt.core.Qt.{AspectRatioMode, TransformationMode}
 import qt.gui.Label
 import scala.concurrent.Future
@@ -11,20 +11,6 @@ import scala.util.Success
 import ImageFiles._
 
 object Image {
-
-  def makeLabel(imagePath: String, width: Int, height: Int) = {
-    val label = new QLabel
-    if (isAnimated(imagePath))
-      Movie.movie(imagePath, width, height).andThen {
-        case Success(mov) => label.setMovie(mov)
-      }
-    else
-      Pixmap.pixmap(imagePath, width, height).andThen {
-        case Success(pix) => label.setPixmap(pix)
-      }
-    
-    label
-  }
 
   def fitSize(path: String, fitWidth: Int, fitHeight: Int) = {
     val imageSize = size(path)
