@@ -12,8 +12,7 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 class TagMode(untaggedImages: UntaggedImages,
               tagDb: SlickTagDb,
               imageSource: Path,
-              imageDest: Path,
-              override val name: String) extends Mode with LazyLogging {
+              imageDest: Path) extends Mode with LazyLogging {
 
   override val commandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {

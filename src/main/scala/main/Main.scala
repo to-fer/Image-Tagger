@@ -29,7 +29,7 @@ object Main extends QtApp with LazyLogging {
 
     val tagDb = new SlickTagDb("tag-db.sqlite")
     val untaggedImages = new UntaggedImages
-    val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir, "tag")
+    val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
     val (screenWidth, screenHeight) = Screen.size
     val tagModeView = new StackedWidget {
       width = screenWidth
@@ -39,7 +39,7 @@ object Main extends QtApp with LazyLogging {
     modeViewMap = Map(tagMode -> tagModeView) ++ modeViewMap
 
     val searchResults = new SearchResults
-    val searchMode = new SearchMode(imageSourceDir, tagDb, searchResults, 5, "search")
+    val searchMode = new SearchMode(imageSourceDir, tagDb, searchResults, 5)
     val searchModeView = new SearchModeView
     modeViewMap = Map(searchMode -> searchModeView.viewWidget) ++ modeViewMap
 

@@ -11,8 +11,7 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 class SearchMode(imageSource: Path,
                  tagDb: SlickTagDb,
                  searchResults: SearchResults,
-                 val imagesPerRow: Int,
-                 override val name: String) extends Mode with LazyLogging {
+                 val imagesPerRow: Int) extends Mode with LazyLogging {
 
   override val commandHandler: CommandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {
