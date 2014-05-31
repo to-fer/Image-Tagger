@@ -4,7 +4,7 @@ import java.nio.file.{Files, Path}
 import tag.db.SlickTagDb
 import command._
 import event.CommandHandler
-import image.SearchResults
+import model.SearchResults
 import command.Error
 import com.typesafe.scalalogging.slf4j.LazyLogging
 

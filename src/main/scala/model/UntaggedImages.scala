@@ -1,4 +1,4 @@
-package image
+package model
 
 import java.io.File
 import qt.image.Image

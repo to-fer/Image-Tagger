@@ -9,7 +9,7 @@ import event.CommandListener
 import qt.gui.{StackedWidget, Widget}
 import qt.util.Screen
 import scala.Some
-import image.{SearchResults, UntaggedImages}
+import model.{SearchResults, UntaggedImages}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
 object Main extends QtApp with LazyLogging {

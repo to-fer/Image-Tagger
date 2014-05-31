@@ -6,7 +6,7 @@ import java.nio.file.{Path, Files}
 import command.Error
 import tag.db.SlickTagDb
 import qt.image.ImageFiles
-import image.UntaggedImages
+import model.UntaggedImages
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
 class TagMode(untaggedImages: UntaggedImages,
