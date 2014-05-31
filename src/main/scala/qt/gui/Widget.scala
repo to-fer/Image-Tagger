@@ -17,6 +17,8 @@ class Widget(val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
   def alignment = _alignment
   def alignment_=(alignmentFlags: Seq[AlignmentFlag]) =
     _alignment = alignmentFlags
+  def alignment_=(alignmentFlag: AlignmentFlag) =
+    _alignment = Seq(alignmentFlag)
 
   def show() = delegate.show()
   def hide() = delegate.hide()
