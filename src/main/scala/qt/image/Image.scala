@@ -62,7 +62,7 @@ class Image(val path: String) extends Label {
       case Success(pix) => delegate.setPixmap(pix)
     }
   else
-    throw new IllegalArgumentException(path + " is a null qt.image!")
+    throw new IllegalArgumentException(path + " is a null image!")
 
   def this(p: String, w: Int, h: Int) = {
     this(p)
