@@ -11,7 +11,6 @@ import scala.util.Success
 import ImageFiles._
 
 object Image {
-
   def fitSize(path: String, fitWidth: Int, fitHeight: Int) = {
     val imageSize = size(path)
 
@@ -93,7 +92,6 @@ class Image(val path: String) extends Label {
   }
 
   override def dispose() = {
-
     if (pixmap.isDefined)
       pixmap.get.andThen {
         case Success(pix) => pix.dispose()
