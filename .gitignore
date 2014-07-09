@@ -1,9 +1,11 @@
 [.]*
 !.gitignore
 
+# SBT directories
 project/
 target/
 
+# Temporary. Tag database exists in project directory for now. Ignore it.
 *.sqlite
 
 rebel.xml
