@@ -9,3 +9,6 @@ target/
 *.sqlite
 
 rebel.xml
+
+# IntelliJ IDEA files
+*.iml
