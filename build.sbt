@@ -28,6 +28,6 @@ val platformDependentLibraries: List[ModuleID] = {
 
 libraryDependencies ++= platformDependentLibraries
 
-resolvers += "Qt Jambi Maven2 Repository" at "http://qtjambi.sourceforge.net/maven2/"
+resolvers += "Qt Jambi Maven2 Repository" at "http://repository.qt-jambi.org/nexus/content/repositories/public/"
 
 parallelExecution in Test := false
