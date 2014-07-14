@@ -65,11 +65,7 @@ object Main extends QtApp with LazyLogging {
     activeMode.addObserver(modeSwitchObserver)
 
     val showNextImageObserver = () => {
-      untaggedImages.previousImage match {
-        case Some(image) =>
-          tagModeView -= image
-        case None =>
-      }
+      untaggedImages.previousImage.foreach(tagModeView.-=)
       val current = untaggedImages.currentImage
       logger.debug(s"Showing next image $current")
       tagModeView += current
