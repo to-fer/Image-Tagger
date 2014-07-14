@@ -38,9 +38,7 @@ class CommandListener {
       case OK =>
       case Error(errorMsg) => displayMessage(errorMsg)
       case DisplayMessage(msg) => displayMessage(msg)
-      case QuitMode => {
-        modeSwitchHandler.handleCommand(enteredCommand)
-      }
+      case QuitMode => modeSwitchHandler.handleCommand(enteredCommand)
       case ModeSwitch => modeSwitchHandler.handleCommand(enteredCommand)
     }
   }
