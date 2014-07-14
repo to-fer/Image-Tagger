@@ -11,13 +11,13 @@ class GridWidget extends Widget with Layout {
   spacing = 0
 
   def spacing = _spacing
-  def spacing_=(s: Int) = {
+  def spacing_=(s: Int): Unit = {
     _spacing = s
     gridLayout.setSpacing(s)
   }
 
   def maxColumns = _maxColumns
-  def maxColumns_=(maxColumns: Int) =
+  def maxColumns_=(maxColumns: Int): Unit =
     if (maxColumns != _maxColumns) {
       _maxColumns = maxColumns
       content.foreach(layout)

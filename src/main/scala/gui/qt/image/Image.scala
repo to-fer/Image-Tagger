@@ -11,7 +11,7 @@ import scala.util.Success
 import ImageFiles._
 
 object Image {
-  def fitSize(path: String, fitWidth: Int, fitHeight: Int) = {
+  def fitSize(path: String, fitWidth: Int, fitHeight: Int): QSize = {
     val imageSize = size(path)
 
     val aspectRatio = imageSize.width/imageSize.height.toDouble
@@ -32,7 +32,7 @@ object Image {
     newSize
   }
   
-  def size(path: String) = {
+  def size(path: String): QSize = {
     val pixmap = new QPixmap(path)
     // TODO does this do anything?
     QPixmapCache.remove(pixmap.cacheKey.toString)
@@ -94,17 +94,17 @@ class Image(val path: String) extends Label {
     } else None
   }
 
-  override def alignment_=(alignmentFlags: Seq[AlignmentFlag]) = {
+  override def alignment_=(alignmentFlags: Seq[AlignmentFlag]): Unit = {
     super.alignment_=(alignmentFlags)
     delegate.setAlignment(alignmentFlags:_*)
   }
 
-  override def alignment_=(alignmentFlag: AlignmentFlag) = {
+  override def alignment_=(alignmentFlag: AlignmentFlag): Unit = {
     super.alignment_=(alignmentFlag)
     delegate.setAlignment(alignmentFlag)
   }
 
-  override def dispose() = {
+  override def dispose(): Unit = {
     if (pixmap.isDefined)
       pixmap.get.andThen {
         case Success(pix) => pix.dispose()

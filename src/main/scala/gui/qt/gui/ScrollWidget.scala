@@ -7,13 +7,13 @@ class ScrollWidget(override val delegate: QWidget = new QWidget) extends Widget 
     setFrameShape(QFrame.Shape.NoFrame)
   }
 
-  override def width_=(w: Int) =
+  override def width_=(w: Int): Unit =
     scroll.setFixedWidth(w)
 
-  override def height_=(h: Int) =
+  override def height_=(h: Int): Unit =
     scroll.setFixedHeight(h)
 
-  override def +=(w: Widget) = {
+  override def +=(w: Widget): Unit = {
     super.+=(w)
     scroll.setWidget(w.delegate)
   }

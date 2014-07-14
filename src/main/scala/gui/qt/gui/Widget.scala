@@ -9,10 +9,10 @@ class Widget(val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
   private var _alignment: Seq[AlignmentFlag] = List(AlignmentFlag.AlignCenter)
 
   def height = delegate.height
-  def height_=(h: Int) = delegate.setFixedHeight(h)
+  def height_=(h: Int): Unit = delegate.setFixedHeight(h)
 
   def width = delegate.width
-  def width_=(w: Int) = delegate.setFixedWidth(w)
+  def width_=(w: Int): Unit = delegate.setFixedWidth(w)
 
   def alignment = _alignment
   def alignment_=(alignmentFlags: Seq[AlignmentFlag]) =
@@ -20,24 +20,24 @@ class Widget(val delegate: QWidget = new QWidget) extends QtDelegate[QWidget] {
   def alignment_=(alignmentFlag: AlignmentFlag) =
     _alignment = Seq(alignmentFlag)
 
-  def show() = delegate.show()
-  def hide() = delegate.hide()
+  def show(): Unit = delegate.show()
+  def hide(): Unit = delegate.hide()
 
   def parent = delegate.parentWidget
-  def parent_=(w: Widget) = delegate.setParent(w.delegate)
+  def parent_=(w: Widget): Unit = delegate.setParent(w.delegate)
 
-  def move(x: Int, y: Int) = delegate.move(x, y)
+  def move(x: Int, y: Int): Unit = delegate.move(x, y)
 
   def sizePolicy = delegate.sizePolicy
-  def sizePolicy_=(sizePolicy: QSizePolicy) = delegate.setSizePolicy(sizePolicy)
+  def sizePolicy_=(sizePolicy: QSizePolicy): Unit = delegate.setSizePolicy(sizePolicy)
 
   def backgroundRole = delegate.backgroundRole
-  def backgroundRole_=(colorRole: QPalette.ColorRole) =
+  def backgroundRole_=(colorRole: QPalette.ColorRole): Unit =
     delegate.setBackgroundRole(colorRole)
 
-  def focus() = delegate.setFocus()
+  def focus(): Unit = delegate.setFocus()
 
-  def styleSheet_=(styleString: String) = delegate.setStyleSheet(styleString)
+  def styleSheet_=(styleString: String): Unit = delegate.setStyleSheet(styleString)
   def styleSheet = delegate.styleSheet()
 
   def dispose(): Unit = delegate.dispose()

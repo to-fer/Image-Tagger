@@ -7,12 +7,12 @@ class LineEdit(override val delegate: QLineEdit = new QLineEdit) extends Widget 
 
   def text = delegate.text
   
-  def text_=(text: String) =
+  def text_=(text: String): Unit =
     delegate.setText(text)
 
   def selectAll(): Unit = delegate.selectAll()
 
-  def returnPressed_=(fn: () => Unit) = {
+  def returnPressed_=(fn: () => Unit): Unit = {
     if (!returnPressedFunction.isEmpty)
       delegate.returnPressed.disconnect(returnPressedFunction.get)
     returnPressedFunction = Some(fn)

@@ -55,7 +55,7 @@ class TagMode(untaggedImages: UntaggedImages,
     }
   }
 
-  def start() = {
+  def start(): CommandResult = {
     logger.debug("Tag mode starting.")
 
     val imageFiles = ImageFiles.imageFilesIn(imageSource.toString)
@@ -67,7 +67,7 @@ class TagMode(untaggedImages: UntaggedImages,
       DisplayMessage("There are no images to tag.")
   }
 
-  private def displayNextImageIfExists() = {
+  private def displayNextImageIfExists(): CommandResult = {
     if (untaggedImages.hasNextImage()) {
       untaggedImages.nextImage()
       OK

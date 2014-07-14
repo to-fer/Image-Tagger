@@ -22,7 +22,7 @@ class UntaggedImages extends Observable {
 
   def untaggedImageFiles = _untaggedImageFiles
   
-  def nextImage() = {
+  def nextImage(): Unit = {
     if (hasNextImage) {
       _previousImage = Some(currentImage)
       imageIndex += 1
@@ -43,10 +43,10 @@ class UntaggedImages extends Observable {
       throw new Exception("There is no next image; you've run out of images to tag!")
   }
   
-  private def loadImage(imageFilePath: String) =
+  private def loadImage(imageFilePath: String): Image =
     new Image(imageFilePath, screenWidth, screenHeight)
   
-  def hasNextImage() = 
+  def hasNextImage(): Boolean =
     imageIndex < untaggedImageFiles.size
   
   def currentImageFile = _untaggedImageFiles(imageIndex)

@@ -13,11 +13,11 @@ import model.{SearchResults, UntaggedImages}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
 object Main extends QtApp with LazyLogging {
-  override def start() = {
+  override def start(): Unit = {
     val commandListener = new CommandListener
     val mainWindow = new MainWindow(commandListener)
 
-    def createIfNotExists(path: Path) =
+    def createIfNotExists(path: Path): Unit =
       if (!Files.exists(path)) {
         logger.info(s"$path does not exist. Creating.")
         Files.createDirectory(path)
