@@ -47,6 +47,7 @@ object Main extends QtApp with LazyLogging {
     val modeSwitcher = new ModeSwitcher(activeMode, modeViewMap)
 
     val modeSwitchObserver = () => {
+      // TODO clean this up?
       val noModeSwitchErrorMsg = "Mode observer was notified, but no mode switch has occurred!"
       activeMode.currentMode match {
         case Some(newMode) => {
