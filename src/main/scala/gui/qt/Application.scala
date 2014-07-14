@@ -1,4 +1,4 @@
-package qt
+package gui.qt
 
 import scala.concurrent.ExecutionContext
 import java.util.concurrent.Executor

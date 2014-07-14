@@ -1,8 +1,8 @@
 package model
 
 import java.io.File
-import qt.image.Image
-import qt.util.Screen
+import gui.qt.image.Image
+import gui.qt.util.Screen
 import event.Observable
 
 class UntaggedImages extends Observable {

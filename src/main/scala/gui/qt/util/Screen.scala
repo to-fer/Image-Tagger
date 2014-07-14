@@ -1,4 +1,4 @@
-package qt.util
+package gui.qt.util
 
 import com.trolltech.qt.gui.QDesktopWidget
 

@@ -1,6 +1,6 @@
 package event.mode
 
-import qt.gui.Widget
+import gui.qt.gui.Widget
 import command.CommandResult
 
 class ModeSwitcher(activeMode: ActiveMode, modeViewMap: Map[Mode, Widget]) {

@@ -1,4 +1,4 @@
-package qt.image
+package gui.qt.image
 
 import org.specs2.mutable.Specification
 import java.nio.file._

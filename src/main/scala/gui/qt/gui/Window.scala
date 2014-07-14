@@ -1,4 +1,4 @@
-package qt.gui
+package gui.qt.gui
 
 class Window extends StackedWidget {
   private var _fullScreen = false

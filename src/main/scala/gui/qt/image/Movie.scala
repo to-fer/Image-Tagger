@@ -1,9 +1,9 @@
-package qt.image
+package gui.qt.image
 
 import com.trolltech.qt.gui.QMovie
 import Image.fitSize
 import scala.concurrent.Future
-import qt.Application.executionContext
+import gui.qt.Application.executionContext
 import scala.util.Success
 
 object Movie {

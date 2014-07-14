@@ -1,6 +1,6 @@
 package event.mode
 
-import qt.gui.Widget
+import gui.qt.gui.Widget
 import event.Observable
 
 

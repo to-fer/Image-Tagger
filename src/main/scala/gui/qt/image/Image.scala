@@ -1,12 +1,12 @@
-package qt.image
+package gui.qt.image
 
 import com.trolltech.qt.gui._
 import java.io.File
 import com.trolltech.qt.core.{Qt, QSize}
 import com.trolltech.qt.core.Qt.{AlignmentFlag, AspectRatioMode, TransformationMode}
-import qt.gui.Label
+import gui.qt.gui.Label
 import scala.concurrent.Future
-import qt.Application.executionContext
+import gui.qt.Application.executionContext
 import scala.util.Success
 import ImageFiles._
 

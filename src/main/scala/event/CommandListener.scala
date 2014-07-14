@@ -1,8 +1,8 @@
 package event
 
-import qt.gui.LineEdit
+import gui.qt.gui.LineEdit
 import command._
-import qt.Application.executionContext
+import gui.qt.Application.executionContext
 import scala.concurrent.Future
 
 class CommandListener {

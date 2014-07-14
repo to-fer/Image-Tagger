@@ -2,12 +2,12 @@ package main
 
 import tag.db.SlickTagDb
 import java.nio.file.{Path, Files, Paths}
-import qt.init.QtApp
+import gui.qt.init.QtApp
 import gui.{SearchModeView, MainWindow}
 import event.mode._
 import event.CommandListener
-import qt.gui.{StackedWidget, Widget}
-import qt.util.Screen
+import gui.qt.gui.{StackedWidget, Widget}
+import gui.qt.util.Screen
 import scala.Some
 import model.{SearchResults, UntaggedImages}
 import com.typesafe.scalalogging.slf4j.LazyLogging

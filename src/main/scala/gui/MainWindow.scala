@@ -1,7 +1,7 @@
 package gui
 
-import qt.gui._
-import qt.util.Screen
+import gui.qt.gui._
+import gui.qt.util.Screen
 import com.trolltech.qt.core.Qt.AlignmentFlag
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
 import event.CommandListener

@@ -1,4 +1,4 @@
-package qt.gui
+package gui.qt.gui
 
 import com.trolltech.qt.gui.{QWidget, QVBoxLayout}
 import com.trolltech.qt.core.Qt.{WidgetAttribute, AlignmentFlag}

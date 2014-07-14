@@ -5,7 +5,7 @@ import command._
 import java.nio.file.{Path, Files}
 import command.Error
 import tag.db.SlickTagDb
-import qt.image.ImageFiles
+import gui.qt.image.ImageFiles
 import model.UntaggedImages
 import com.typesafe.scalalogging.slf4j.LazyLogging
 

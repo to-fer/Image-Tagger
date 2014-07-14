@@ -1,10 +1,10 @@
-package qt.image
+package gui.qt.image
 
 import com.trolltech.qt.gui.QPixmap
 import com.trolltech.qt.core.Qt
 import Image.fitSize
 import scala.concurrent.Future
-import qt.Application.executionContext
+import gui.qt.Application.executionContext
 import scala.util.Success
 
 object Pixmap {

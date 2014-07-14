@@ -1,4 +1,4 @@
-package qt.gui
+package gui.qt.gui
 
 import com.trolltech.qt.gui.{QFrame, QLabel}
 

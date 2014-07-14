@@ -1,8 +1,8 @@
 package gui
 
-import qt.util.Screen
-import qt.gui.{GridWidget, ScrollWidget}
-import qt.image.Image
+import gui.qt.util.Screen
+import gui.qt.gui.{GridWidget, ScrollWidget}
+import gui.qt.image.Image
 import com.trolltech.qt.gui.QFrame
 
 class SearchModeView(imagesPerRow: Int = 5) {

@@ -1,4 +1,4 @@
-package qt.init
+package gui.qt.init
 
 import com.trolltech.qt.gui.QApplication
 

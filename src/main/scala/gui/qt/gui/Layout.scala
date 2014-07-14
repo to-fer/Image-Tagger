@@ -1,4 +1,4 @@
-package qt.gui
+package gui.qt.gui
 
 trait Layout extends Parent {
 
