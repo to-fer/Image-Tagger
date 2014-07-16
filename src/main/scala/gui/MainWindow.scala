@@ -1,11 +1,10 @@
 package gui
 
-import com.trolltech.qt.gui.QSizePolicy
-import gui.qt.gui._
-import gui.qt.util.Screen
 import com.trolltech.qt.core.Qt.AlignmentFlag
+import com.trolltech.qt.gui.QSizePolicy
 import com.trolltech.qt.gui.QStackedLayout.StackingMode
 import event.CommandListener
+import gui.qt.gui._
 
 class MainWindow(commandListener: CommandListener) extends Window {
   title = "Tagger"
