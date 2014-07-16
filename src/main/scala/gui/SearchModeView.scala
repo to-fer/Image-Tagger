@@ -7,10 +7,8 @@ import com.trolltech.qt.gui.QFrame
 
 class SearchModeView(imagesPerRow: Int = 5) {
   private val (screenWidth, screenHeight) = Screen.size
-  val viewWidget = new ScrollWidget {
-    width = screenWidth
-    height = screenHeight
-  }
+  val viewWidget = new ScrollWidget
+
   private val imageWidth = screenWidth/imagesPerRow
   private val imageHeight = screenHeight/imagesPerRow
   private var shownImages = Seq.empty[Image]

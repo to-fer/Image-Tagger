@@ -1,14 +1,16 @@
 package gui.qt.image
 
-import com.trolltech.qt.gui._
 import java.io.File
-import com.trolltech.qt.core.{Qt, QSize}
+
+import com.trolltech.qt.core.QSize
 import com.trolltech.qt.core.Qt.{AlignmentFlag, AspectRatioMode, TransformationMode}
-import gui.qt.gui.Label
-import scala.concurrent.Future
+import com.trolltech.qt.gui._
 import gui.qt.Application.executionContext
+import gui.qt.gui.Label
+import gui.qt.image.ImageFiles._
+
+import scala.concurrent.Future
 import scala.util.Success
-import ImageFiles._
 
 object Image {
   def fitSize(path: String, fitWidth: Int, fitHeight: Int): QSize = {

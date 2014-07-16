@@ -1,10 +1,10 @@
 package gui.qt.gui
 
 import com.trolltech.qt.gui.QLayout.SizeConstraint
-import com.trolltech.qt.gui.{QLayout, QSizePolicy, QStackedLayout}
-import com.trolltech.qt.gui.QStackedLayout.StackingMode
-import QSizePolicy.Policy._
 import com.trolltech.qt.gui.QLayout.SizeConstraint._
+import com.trolltech.qt.gui.QSizePolicy.Policy._
+import com.trolltech.qt.gui.QStackedLayout.StackingMode
+import com.trolltech.qt.gui.{QSizePolicy, QStackedLayout}
 
 class StackedWidget extends Widget with Layout {
   private val stackedLayout = new QStackedLayout(delegate)

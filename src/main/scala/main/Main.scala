@@ -1,16 +1,16 @@
 package main
 
-import tag.db.SlickTagDb
-import java.nio.file.{Path, Files, Paths}
-import gui.qt.init.QtApp
-import gui.{SearchModeView, MainWindow}
-import event.mode._
-import event.CommandListener
-import gui.qt.gui.{StackedWidget, Widget}
-import gui.qt.util.Screen
-import scala.Some
-import model.{SearchResults, UntaggedImages}
+import java.nio.file.{Files, Path, Paths}
+
 import com.typesafe.scalalogging.slf4j.LazyLogging
+import event.CommandListener
+import event.mode._
+import gui.qt.gui.{StackedWidget, Widget}
+import gui.qt.init.QtApp
+import gui.qt.util.Screen
+import gui.{MainWindow, SearchModeView}
+import model.{SearchResults, UntaggedImages}
+import tag.db.SlickTagDb
 
 object Main extends QtApp with LazyLogging {
   override def start(): Unit = {
@@ -32,8 +32,7 @@ object Main extends QtApp with LazyLogging {
     val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
     val (screenWidth, screenHeight) = Screen.size
     val tagModeView = new StackedWidget {
-      width = screenWidth
-      height = screenHeight
+      styleSheet = "background: black;"
     }
     var modeViewMap = Map.empty[Mode, Widget]
     modeViewMap = Map(tagMode -> tagModeView) ++ modeViewMap
