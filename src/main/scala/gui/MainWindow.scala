@@ -1,5 +1,6 @@
 package gui
 
+import com.trolltech.qt.gui.QSizePolicy
 import gui.qt.gui._
 import gui.qt.util.Screen
 import com.trolltech.qt.core.Qt.AlignmentFlag
@@ -8,7 +9,9 @@ import event.CommandListener
 
 class MainWindow(commandListener: CommandListener) extends Window {
   title = "Tagger"
+
   maximized = true
+  sizePolicy = new QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
 
   private val commandLineEdit = new LineEdit {
     width = 400
@@ -20,11 +23,7 @@ class MainWindow(commandListener: CommandListener) extends Window {
   commandLineEdit.returnPressed = commandListener.commandEntered
   commandListener.lineEdit = commandLineEdit
 
-  private val (screenWidth, screenHeight) = Screen.size
-  
   private val displayStack = new StackedWidget {
-    width = screenWidth
-    height = screenHeight
     stackingMode = StackingMode.StackOne
   }
   
