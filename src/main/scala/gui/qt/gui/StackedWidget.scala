@@ -40,7 +40,7 @@ class StackedWidget extends Widget with Layout {
       case Preferred => SetNoConstraint // sloppy
     }
 
-    // Only uses vertical policy (SizeConstraint doesn't make a distinction between verical/horizontal constraints).
+    // Only uses vertical policy (SizeConstraint doesn't make a distinction between vertical/horizontal constraints).
     stackedLayout.setSizeConstraint(policyToConstraint(policy.verticalPolicy))
   }
 
