@@ -30,7 +30,6 @@ object Main extends QtApp with LazyLogging {
     val tagDb = new SlickTagDb("tag-db.sqlite")
     val untaggedImages = new UntaggedImages
     val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
-    val (screenWidth, screenHeight) = Screen.size
     val tagModeView = new StackedWidget {
       styleSheet = "background: black;"
     }
