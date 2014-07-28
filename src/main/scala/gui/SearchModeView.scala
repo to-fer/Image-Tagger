@@ -1,5 +1,6 @@
 package gui
 
+import com.trolltech.qt.core.Qt.ScrollBarPolicy
 import gui.qt.util.Screen
 import gui.qt.gui.{GridWidget, ScrollWidget}
 import gui.qt.image.Image
@@ -7,7 +8,10 @@ import com.trolltech.qt.gui.QFrame
 
 class SearchModeView(imagesPerRow: Int = 5) {
   private val (screenWidth, screenHeight) = Screen.size
-  val viewWidget = new ScrollWidget
+  val viewWidget = new ScrollWidget {
+    horizontalScrollBarPolicy = ScrollBarPolicy.ScrollBarAlwaysOff
+    verticalScrollBarPolicy = ScrollBarPolicy.ScrollBarAsNeeded
+  }
 
   private val imageWidth = screenWidth/imagesPerRow
   private val imageHeight = screenHeight/imagesPerRow
