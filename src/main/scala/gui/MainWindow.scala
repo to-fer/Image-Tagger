@@ -16,7 +16,6 @@ class MainWindow(commandListener: CommandListener) extends Window {
     width = 400
     height = 25
     alignment = List(AlignmentFlag.AlignHCenter, AlignmentFlag.AlignBottom)
-    styleSheet = "background: white;"
     focus()
   }
   commandLineEdit.returnPressed = commandListener.commandEntered
