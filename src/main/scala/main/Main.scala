@@ -7,7 +7,6 @@ import event.CommandListener
 import event.mode._
 import gui.qt.gui.{StackedWidget, Widget}
 import gui.qt.init.QtApp
-import gui.qt.util.Screen
 import gui.{MainWindow, SearchModeView}
 import model.{SearchResults, UntaggedImages}
 import tag.db.SlickTagDb
