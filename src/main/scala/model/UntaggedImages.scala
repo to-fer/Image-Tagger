@@ -1,9 +1,11 @@
 package model
 
 import java.io.File
-import gui.qt.image.Image
-import gui.qt.util.Screen
+
 import event.Observable
+
+import scalafx.scene.image.Image
+import scalafx.stage.Screen
 
 class UntaggedImages extends Observable {
   private var _untaggedImageFiles = Seq.empty[File]
@@ -11,7 +13,6 @@ class UntaggedImages extends Observable {
   private var preloadedImage: Option[Image] = None
   private var _currentImage: Image = _
   private var _previousImage: Option[Image] = None
-  private val (screenWidth, screenHeight) = Screen.size
 
   def untaggedImageFiles_=(files: Seq[File]): Unit = {
     _untaggedImageFiles = files
@@ -44,8 +45,8 @@ class UntaggedImages extends Observable {
   }
   
   private def loadImage(imageFilePath: String): Image =
-    new Image(imageFilePath, screenWidth, screenHeight)
-  
+    new Image(imageFilePath, Screen.primary.bounds.width, Screen.primary.bounds.height, true, true, true)
+
   def hasNextImage(): Boolean =
     imageIndex < untaggedImageFiles.size
   

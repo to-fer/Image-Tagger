@@ -1,9 +1,8 @@
 package event.mode
 
-import gui.qt.gui.Widget
-import command.CommandResult
+import scalafx.scene.Parent
 
-class ModeSwitcher(activeMode: ActiveMode, modeViewMap: Map[Mode, Widget]) {
+class ModeSwitcher(activeMode: ActiveMode, modeViewMap: Map[Mode, Parent]) {
   def switch(newMode: Mode): Unit =
     activeMode.setModeAndView(newMode, modeViewMap(newMode))
 }

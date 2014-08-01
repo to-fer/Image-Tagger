@@ -1,36 +1,33 @@
 package gui
 
-import com.trolltech.qt.core.Qt.ScrollBarPolicy
-import gui.qt.util.Screen
-import gui.qt.gui.{GridWidget, ScrollWidget}
-import gui.qt.image.Image
-import com.trolltech.qt.gui.QFrame
+import scalafx.scene.control.ScrollPane
+import scalafx.scene.image.{ImageView, Image}
+import scalafx.scene.layout.GridPane
+import scalafx.stage.Screen
 
 class SearchModeView(imagesPerRow: Int = 5) {
-  private val (screenWidth, screenHeight) = Screen.size
-  val viewWidget = new ScrollWidget {
-    horizontalScrollBarPolicy = ScrollBarPolicy.ScrollBarAlwaysOff
-    verticalScrollBarPolicy = ScrollBarPolicy.ScrollBarAsNeeded
+  val imageViewScroll = new ScrollPane {
+    hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+    vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
   }
 
-  private val imageWidth = screenWidth/imagesPerRow
-  private val imageHeight = screenHeight/imagesPerRow
+  private val imageWidth = Screen.primary.bounds.width/imagesPerRow
+  private val imageHeight = Screen.primary.bounds.height/imagesPerRow
   private var shownImages = Seq.empty[Image]
 
   def show(imagePaths: Seq[String]): Unit = {
     shownImages = imagePaths.map(path => {
-      new Image(path, imageWidth, imageHeight)   {
-        frameShape = QFrame.Shape.Box
-      }
+      new Image(path, imageWidth, imageHeight, true, true, true) 
     })
-    val imageGridWidget = new GridWidget
-    imageGridWidget.content = shownImages
-    viewWidget.content = imageGridWidget
+    val imageViews = shownImages.map(new ImageView(_))
+    val imageGridWidget = new GridPane {
+      content = imageViews
+    }
+    imageViewScroll.content = imageGridWidget
   }
 
   def hideImages(): Unit = {
-    shownImages.foreach(_.dispose())
-    viewWidget.content(0).dispose()
+    imageViewScroll.content = null
   }
 
 }

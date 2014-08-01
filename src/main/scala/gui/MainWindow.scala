@@ -1,196 +1,53 @@
 package gui
 
-import com.trolltech.qt.core.Qt.AlignmentFlag
-import com.trolltech.qt.gui.QSizePolicy
-import com.trolltech.qt.gui.QStackedLayout.StackingMode
+import javafx.event.{ActionEvent, EventHandler}
+
 import event.CommandListener
-import gui.qt.gui._
 
-class MainWindow(commandListener: CommandListener) extends Window {
+import scalafx.application.JFXApp.PrimaryStage
+import scalafx.scene.control.TextField
+import scalafx.scene.{Parent, Group, Scene}
+import scalafx.scene.layout.{BorderPane, StackPane}
+
+class MainWindow(commandListener: CommandListener) extends PrimaryStage {
   title = "Tagger"
+  fullScreen = true
+  width = 750
+  height = 750
 
-  maximized = true
-  sizePolicy = new QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
-
-  private val commandLineEdit = new LineEdit {
-    width = 400
-    height = 25
-    alignment = List(AlignmentFlag.AlignHCenter, AlignmentFlag.AlignBottom)
-    focus()
-  }
-  commandLineEdit.returnPressed = commandListener.commandEntered
-  commandListener.lineEdit = commandLineEdit
-
-  private val displayStack = new StackedWidget {
-    stackingMode = StackingMode.StackOne
-  }
-  
-  private var _currentModeView: Widget = _
-
-  def currentModeView = _currentModeView
-  
-  def currentModeView_=(modeWidget: Widget): Unit = {
-    if (!displayStack.content.contains(modeWidget))
-      displayStack += modeWidget
-    displayStack.currentWidget = modeWidget
-    _currentModeView = modeWidget
-  }
-
-  content = List(
-    new Container(commandLineEdit),
-    new Container(displayStack)
-  )
-}
-
-/*
-object MainWindow extends QtApp {
-
-  // Non-GUI initialization stuff
-  val tagDb = new SlickTagDb("db.sqlite")
-  var knownTags = tagDb.tags
-
-  val imageDir = Paths.get(System.getProperty("user.home"), "images")
-  if (!Files.exists(imageDir))
-    Files.createDirectory(imageDir)
-
-  val imageDest = Paths.get(System.getProperty("user.home"), "images", "tagged")
-  if (!Files.exists(imageDest))
-    Files.createDirectory(imageDest)
-
-  val (screenWidth, screenHeight) = Screen.size
-
-  override val mainWindow = new Window {
-    title = "Tagger"
-    maximized = true
-
-    val searchWidget = new ScrollWidget {
-      width = screenWidth
-      height = screenHeight
-    }
-    val imageWidget = new StackedWidget {
-      width = screenWidth
-      height = screenHeight
-    }
-
-    val displayStack = new StackedWidget {
-      width = screenWidth
-      height = screenHeight
-      stackingMode = StackingMode.StackOne
-      content = List (
-        searchWidget,
-        imageWidget
-      )
-    }
-
-    content = List (
-      new Container(new LineEdit {
-        width = 400
-        height = 25
-        alignment = List(AlignmentFlag.AlignHCenter, AlignmentFlag.AlignBottom)
-        styleSheet = "background: white;"
-        focus()
-
-        val commandEntered: () => Unit = () => {
-          def onCommand() = {
-            val enteredCommand = text
-            text = ""
-            enteredCommand
-          }
-
-          def errorMessage(msg: String): Unit = {
-            text = msg
-            selectAll()
-          }
-          val enteredCommand = onCommand()
-
-          enteredCommand match {
-            case "tag" => {
-              val imageFiles = Image.imageFilesIn(imageDir.toString)
-              if (!imageFiles.isEmpty) {
-                displayStack.currentWidget = imageWidget
-
-                val viewer = new SequentialImageViewer(
-                  layout = imageWidget,
-                  imageFiles = imageFiles,
-                  imageWidth = screenWidth,
-                  imageHeight = screenHeight
-                )
-                viewer.showFirstImage()
-
-                returnPressed = () => {
-                  val enteredCommand = onCommand()
-
-                  def showNextImageIfExists() =
-                    if (viewer.hasNext)
-                      viewer.showNextImage()
-                    else
-                      errorMessage("All images have been tagged.")
-
-                  if (enteredCommand != "") {
-                    enteredCommand match {
-                      case SkipCommand(_) => showNextImageIfExists()
-                      case AddTagCommand(tag) => {
-                        if (tag.contains(" "))
-                          errorMessage("Tags cannot contain spaces.")
-                        else if (knownTags.contains(tag))
-                          errorMessage("That tag already exists.")
-                        else {
-                          knownTags = knownTags + tag
-                          tagDb.addTag(tag)
-                        }
-                      }
-                      case TagCommand(tags) if (tags.forall(knownTags.contains)) => {
-                        val imageFile = viewer.currentImageFile
-                        val destFile = imageDest resolve imageFile.toPath.getFileName
-                        tagDb.tagFile(destFile, tags)
-                        showNextImageIfExists()
-                        Files.move(imageFile.toPath, destFile)
-                      }
-                      case "delete" => {
-                        val curImageFile = viewer.currentImageFile
-                        val curImage = viewer.getCurrentImage
-                        curImage.dispose()
-                        curImageFile.delete()
-                        viewer.showNextImage()
-                      }
-                      case QuitCommand(_) => {
-                        viewer.dispose()
-                        returnPressed = commandEntered
-                        displayStack.currentWidget = searchWidget
-                      }
-                      case _ =>
-                        errorMessage("Unknown command.")
-                    }
-                  }
+  private val imageDisplayArea = new Group
+  scene = new Scene {
+    root = new StackPane {
+      content = List(
+        imageDisplayArea,
+        new BorderPane {
+          mouseTransparent = true
+          bottom = new TextField {
+            requestFocus()
+            onAction = new EventHandler[ActionEvent] {
+              override def handle(event: ActionEvent): Unit = {
+                def displayMessage(message: String): Unit = {
+                  text = message
                 }
+
+                val commandString = text.value
+                text = ""
+                commandListener.commandEntered(commandString, displayMessage)
               }
-              else
-                errorMessage("There are no images to tag.")
-            }
-            case tag => {
-              if (knownTags.contains(tag)) {
-                val gridWidget = new GridWidget
-                val ImagesPerRow = 5
-                val imageWidth = screenWidth/ImagesPerRow
-                val imageHeight = screenHeight/ImagesPerRow
-                val taggedImageFiles = tagDb.filesWithTag(tag)
-                taggedImageFiles foreach { f => {
-                  val image = new Image(f.toString, imageWidth, imageHeight) {
-                    frameShape = QFrame.Shape.Box
-                  }
-                  gridWidget += image
-                }}
-                searchWidget.content = gridWidget
-              }
-              else
-                errorMessage("Invalid tag.")
             }
           }
         }
-        returnPressed = commandEntered
-      }),
-      new Container(displayStack)
-    )
+      )
+    }
+  }
+
+  private var _currentModeView: Parent = _
+
+  def currentModeView = _currentModeView
+  
+  def currentModeView_=(modeWidget: Parent): Unit = {
+    imageDisplayArea.children.clear()
+    imageDisplayArea.children.add(modeWidget)
+    _currentModeView = modeWidget
   }
 }
-*/
