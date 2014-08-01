@@ -1,7 +1,10 @@
 package gui
 
+import util.JavaFXExecutionContext.javaFxExecutionContext
+
+import scala.concurrent.Future
 import scalafx.scene.control.ScrollPane
-import scalafx.scene.image.{ImageView, Image}
+import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Screen
 
@@ -15,7 +18,7 @@ class SearchModeView(imagesPerRow: Int = 5) {
   private val imageHeight = Screen.primary.bounds.height/imagesPerRow
   private var shownImages = Seq.empty[Image]
 
-  def show(imagePaths: Seq[String]): Unit = {
+  def show(imagePaths: Seq[String]): Unit = Future {
     shownImages = imagePaths.map(path => {
       new Image(path, imageWidth, imageHeight, true, true, true) 
     })

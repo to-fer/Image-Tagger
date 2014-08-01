@@ -9,6 +9,8 @@ import gui.{MainWindow, SearchModeView}
 import model.{SearchResults, UntaggedImages}
 import tag.db.SlickTagDb
 
+import scala.concurrent.Future
+import util.JavaFXExecutionContext.javaFxExecutionContext
 import scalafx.application.JFXApp
 import scalafx.scene.Parent
 import scalafx.scene.image.ImageView
@@ -69,11 +71,12 @@ object Main extends JFXApp with LazyLogging {
   activeMode.addObserver(modeSwitchObserver)
 
   val showNextImageObserver = () => {
-    untaggedImages.previousImage
-    val current = untaggedImages.currentImage
-    logger.debug(s"Showing next image $current")
-    tagModeView.children.clear()
-    tagModeView.children.add(new ImageView(current))
+    Future {
+      val current = untaggedImages.currentImage
+      logger.debug(s"Showing next image $current")
+      tagModeView.children.clear()
+      tagModeView.children.add(new ImageView(current))
+    }
     ()
   }
   untaggedImages.addObserver(showNextImageObserver)

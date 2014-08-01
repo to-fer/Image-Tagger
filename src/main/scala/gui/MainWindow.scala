@@ -4,10 +4,12 @@ import javafx.event.{ActionEvent, EventHandler}
 
 import event.CommandListener
 
+import scala.concurrent.Future
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.control.TextField
 import scalafx.scene.layout.{BorderPane, StackPane}
 import scalafx.scene.{Parent, Scene}
+import util.JavaFXExecutionContext.javaFxExecutionContext
 
 class MainWindow(commandListener: CommandListener) extends PrimaryStage {
   title = "Tagger"
@@ -45,7 +47,7 @@ class MainWindow(commandListener: CommandListener) extends PrimaryStage {
 
   def currentModeView = _currentModeView
   
-  def currentModeView_=(modeWidget: Parent): Unit = {
+  def currentModeView_=(modeWidget: Parent): Unit = Future {
     imageDisplayArea.children.clear()
     imageDisplayArea.children.add(modeWidget)
     _currentModeView = modeWidget

@@ -18,6 +18,7 @@ class SearchMode(imageSource: Path,
       case "" => OK // Ignore empty inputs
       case TagModeCommand(_) => ModeSwitch
       case tag: String => {
+        logger.info(s"Search query: $tag")
         if (tagDb.tags.contains(tag)) {
           val taggedImageFiles = tagDb.filesWithTag(tag)
           if (!taggedImageFiles.isEmpty) {
@@ -39,7 +40,7 @@ class SearchMode(imageSource: Path,
   }
 
   override def start(): CommandResult = {
-    logger.debug("Search mode starting.")
+    logger.info("Search mode starting.")
     OK
   }
 

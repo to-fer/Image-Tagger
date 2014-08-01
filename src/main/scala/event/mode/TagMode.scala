@@ -5,9 +5,12 @@ import java.nio.file.{Files, Path}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
 import event.CommandHandler
-import gui.qt.image.ImageFiles
+import image.ImageFiles
 import model.UntaggedImages
 import tag.db.SlickTagDb
+
+import scala.concurrent.Future
+import util.JavaFXExecutionContext.javaFxExecutionContext
 
 class TagMode(untaggedImages: UntaggedImages,
               tagDb: SlickTagDb,
@@ -17,7 +20,6 @@ class TagMode(untaggedImages: UntaggedImages,
   override val commandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {
         case SkipCommand(_) => {
-          untaggedImages.currentImage.cancel()
           displayNextImageIfExists()
         }
         case AddTagCommand(tag) => {
@@ -32,9 +34,10 @@ class TagMode(untaggedImages: UntaggedImages,
         }
         case SearchModeCommand(_) => ModeSwitch
         case "delete" => {
-          untaggedImages.currentImage.cancel()
-          untaggedImages.currentImageFile.delete()
-          displayNextImageIfExists()
+          val currentImageFile = untaggedImages.currentImageFile
+          val result = displayNextImageIfExists()
+          currentImageFile.delete()
+          result
         }
         case QuitCommand(_) => ModeSwitch
         case "" => OK // Ignore empty inputs
@@ -43,7 +46,6 @@ class TagMode(untaggedImages: UntaggedImages,
           val destFile = imageDest resolve imageFile.toPath.getFileName
           tagDb.tagFile(destFile, tags)
 
-          untaggedImages.currentImage.cancel()
           val result = displayNextImageIfExists()
 
           Files.move(imageFile.toPath, destFile)
@@ -68,12 +70,10 @@ class TagMode(untaggedImages: UntaggedImages,
   }
 
   private def displayNextImageIfExists(): CommandResult = {
-    if (untaggedImages.hasNextImage()) {
-      untaggedImages.nextImage()
-      OK
-    }
-    else
-      DisplayMessage("Tagging Done :3")
+    untaggedImages.currentImage.cancel()
+    val result = if (untaggedImages.hasNextImage()) OK else DisplayMessage("Tagging Done :3")
+    if (untaggedImages.hasNextImage())
+      Future { untaggedImages.nextImage() }
+    result
   }
-
 }

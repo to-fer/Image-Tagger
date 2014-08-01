@@ -1,4 +1,4 @@
-package gui.qt.image
+package image
 
 import java.io.File
 
