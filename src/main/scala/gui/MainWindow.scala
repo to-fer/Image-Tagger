@@ -6,8 +6,8 @@ import event.CommandListener
 
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.control.TextField
-import scalafx.scene.{Parent, Group, Scene}
 import scalafx.scene.layout.{BorderPane, StackPane}
+import scalafx.scene.{Parent, Scene}
 
 class MainWindow(commandListener: CommandListener) extends PrimaryStage {
   title = "Tagger"
@@ -15,7 +15,7 @@ class MainWindow(commandListener: CommandListener) extends PrimaryStage {
   width = 750
   height = 750
 
-  private val imageDisplayArea = new Group
+  private val imageDisplayArea = new StackPane
   scene = new Scene {
     root = new StackPane {
       content = List(
