@@ -2,9 +2,6 @@ package event
 
 import command._
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class CommandListener {
   private var _modeCommandHandler: CommandHandler = _
   private var _modeSwitchHandler: CommandHandler = _
@@ -17,7 +14,7 @@ class CommandListener {
 
   def modeSwitchHandler_=(h: CommandHandler) = _modeSwitchHandler = h
 
-  def commandEntered(commandString: String, displayMessage: String => Unit): Unit = Future {
+  def commandEntered(commandString: String, displayMessage: String => Unit): Unit = {
     val commandResult = commandHandler.handleCommand(commandString)
     commandResult match {
       case OK =>

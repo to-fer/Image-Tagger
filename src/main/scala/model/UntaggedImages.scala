@@ -32,11 +32,11 @@ class UntaggedImages extends Observable {
         case Some(image) =>
           _currentImage = image
         case None =>
-          _currentImage = loadImage(_untaggedImageFiles(imageIndex).toString)
+          _currentImage = loadImage(_untaggedImageFiles(imageIndex).toURI.toString)
       }
 
       if (hasNextImage)
-        preloadedImage = Some(loadImage(_untaggedImageFiles(imageIndex + 1).toString))
+        preloadedImage = Some(loadImage(_untaggedImageFiles(imageIndex + 1).toURI.toString))
 
       notifyObservers()
     }

@@ -1,12 +1,12 @@
 package event.mode
 
-import java.nio.file.{Files, Path}
-import tag.db.SlickTagDb
+import java.nio.file.Path
+
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
 import event.CommandHandler
 import model.SearchResults
-import command.Error
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import tag.db.SlickTagDb
 
 class SearchMode(imageSource: Path,
                  tagDb: SlickTagDb,
@@ -26,7 +26,7 @@ class SearchMode(imageSource: Path,
             if (!notExistingTaggedImageFiles.isEmpty)
               logger.warn(s"Search results contain non-existent files: $notExistingTaggedImageFiles.")
 
-            searchResults.imagePaths = existingTaggedImageFiles.map(_.toString)
+            searchResults.imagePaths = existingTaggedImageFiles.map(_.toURI.toString)
             OK
           }
           else
