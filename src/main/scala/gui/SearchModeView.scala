@@ -14,6 +14,11 @@ class SearchModeView(imagesPerRow: Int = 5) {
     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
   }
 
+  private val imageViewGrid = new GridPane {
+    style = "-fx-background-color: black;"
+  }
+  imageViewScroll.content = imageViewGrid
+
   private val imageWidth = Screen.primary.bounds.width/imagesPerRow
   private val imageHeight = Screen.primary.bounds.height/imagesPerRow
   private var shownImages = Seq.empty[Image]
@@ -23,10 +28,7 @@ class SearchModeView(imagesPerRow: Int = 5) {
       new Image(path, imageWidth, imageHeight, true, true, true) 
     })
     val imageViews = shownImages.map(new ImageView(_))
-    val imageGridWidget = new GridPane {
-      content = imageViews
-    }
-    imageViewScroll.content = imageGridWidget
+    imageViewGrid.content = imageViews
   }
 
   def hideImages(): Unit = {

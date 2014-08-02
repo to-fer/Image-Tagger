@@ -3,13 +3,13 @@ package gui
 import javafx.event.{ActionEvent, EventHandler}
 
 import event.CommandListener
+import util.JavaFXExecutionContext.javaFxExecutionContext
 
 import scala.concurrent.Future
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.control.TextField
 import scalafx.scene.layout.{BorderPane, StackPane}
 import scalafx.scene.{Parent, Scene}
-import util.JavaFXExecutionContext.javaFxExecutionContext
 
 class MainWindow(commandListener: CommandListener) extends PrimaryStage {
   title = "Tagger"
