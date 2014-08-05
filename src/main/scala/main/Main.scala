@@ -8,9 +8,7 @@ import event.mode._
 import gui.MainWindow
 import model.{ActiveMode, SearchResults, UntaggedImages}
 import tag.db.SlickTagDb
-import util.JavaFXExecutionContext.javaFxExecutionContext
 
-import scala.concurrent.Future
 import scalafx.application.JFXApp
 
 object Main extends JFXApp with LazyLogging {
@@ -42,7 +40,6 @@ object Main extends JFXApp with LazyLogging {
   val modeSwitcher = new ModeSwitcher(activeMode)
 
   val modeSwitchObserver = () => {
-    // TODO clean this up?
     val noModeSwitchErrorMsg = "Mode observer was notified, but no mode switch has occurred!"
     activeMode.currentMode match {
       case Some(newMode) => {
@@ -50,17 +47,22 @@ object Main extends JFXApp with LazyLogging {
         mainWindow.currentModeView = newMode.view.root
       }
       case None =>
-        throw new Exception(noModeSwitchErrorMsg)
+        throw new Exception(noModeSwitchErrorMsg) // TODO clean this up?
     }
   }
   activeMode.addObserver(modeSwitchObserver)
 
+  var taggingAlmostDone = false
   val showNextImageObserver = () => {
-    Future {
-      val current = untaggedImages.currentImage
-      logger.info(s"Showing next image $current")
-      tagMode.view.show(current)
+    if (!taggingAlmostDone) {
+      val current = untaggedImages.currentURI
+      tagMode.view.cache(current)
+      logger.info(s"Next image: $current")
+
+      if (!untaggedImages.hasNext)
+        taggingAlmostDone = true
     }
+    tagMode.view.showNext()
     ()
   }
   untaggedImages.addObserver(showNextImageObserver)

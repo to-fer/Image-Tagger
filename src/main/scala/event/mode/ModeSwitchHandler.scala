@@ -1,9 +1,7 @@
 package event.mode
 
-import event.CommandHandler
 import command._
-import command.Error
-import scala.Some
+import event.CommandHandler
 
 class ModeSwitchHandler(modeSwitcher: ModeSwitcher, searchMode: SearchMode, tagMode: TagMode) extends CommandHandler {
   private def startAndSwitchMode(mode: Mode): CommandResult = {

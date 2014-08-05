@@ -1,21 +1,30 @@
 package gui
 
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{Pane, StackPane}
+import scalafx.scene.layout.StackPane
 import scalafx.stage.Screen
 
 class TagModeView extends ModeView {
-  override val root: Pane = new StackPane {
+  private var imageViewCache = List.empty[ImageView]
+  override val root: StackPane = new StackPane {
     style = "-fx-background-color: black;"
   }
 
-  def show(im: Image): Unit = {
-    root.content = new ImageView {
+  // Cache images early So the loading of the next image when in tag mode appears instantaneous.
+  def cache(imagePath: String): Unit = {
+    imageViewCache = new ImageView {
       preserveRatio = true
       smooth = true
       fitWidth = Screen.primary.bounds.width
       fitHeight = Screen.primary.bounds.height
-      image = im
-    }
+      image = new Image(imagePath, true)
+    } :: imageViewCache
+  }
+
+  def showNext(): Unit = {
+    println("Cache: " + imageViewCache.length)
+    // Remove tail so cache always contains the current and next ImageView
+    root.content = imageViewCache.tail(0)
+    imageViewCache = imageViewCache.dropRight(1)
   }
 }

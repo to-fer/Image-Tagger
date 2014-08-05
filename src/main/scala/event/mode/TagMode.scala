@@ -1,6 +1,7 @@
 package event.mode
 
-import java.nio.file.{Files, Path}
+import java.io.File
+import java.nio.file.{Files, Path, Paths}
 
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
@@ -9,9 +10,10 @@ import gui.TagModeView
 import image.ImageFiles
 import model.UntaggedImages
 import tag.db.SlickTagDb
-
-import scala.concurrent.Future
 import util.JavaFXExecutionContext.javaFxExecutionContext
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class TagMode(untaggedImages: UntaggedImages,
               tagDb: SlickTagDb,
@@ -20,10 +22,15 @@ class TagMode(untaggedImages: UntaggedImages,
 
   override val view: TagModeView = new TagModeView
 
+  private var taggingAlmostDone = false
+
   override val commandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {
         case SkipCommand(_) => {
-          displayNextImageIfExists()
+          val result = Future {
+            displayNextImageIfExists()
+          }
+          Await.result(result, Duration.Inf)
         }
         case AddTagCommand(tag) => {
           if (tag.contains(" "))
@@ -37,23 +44,28 @@ class TagMode(untaggedImages: UntaggedImages,
         }
         case SearchModeCommand(_) => ModeSwitch
         case "delete" => {
-          val currentImageFile = untaggedImages.currentImageFile
-          val result = displayNextImageIfExists()
-          currentImageFile.delete()
-          result
+          val currentImageFile = new File(untaggedImages.currentURI)
+          val result = Future {
+            val res = displayNextImageIfExists()
+            currentImageFile.delete()
+            res
+          }
+          Await.result(result, Duration.Inf)
         }
         case QuitCommand(_) => ModeSwitch
         case "" => OK // Ignore empty inputs
         case TagCommand(tags) if (tags.forall(tagDb.tags.contains)) => {
-          val imageFile = untaggedImages.currentImageFile
-          val destFile = imageDest resolve imageFile.toPath.getFileName
+          val imageFile = Paths.get(untaggedImages.currentURI)
+          val destFile = imageDest resolve imageFile.getFileName
           tagDb.tagFile(destFile, tags)
 
-          val result = displayNextImageIfExists()
+          val result = Future {
+            val res = displayNextImageIfExists()
+            Files.move(imageFile, destFile)
+            res
+          }
 
-          Files.move(imageFile.toPath, destFile)
-
-          result
+          Await.result(result, Duration.Inf)
         }
         case unknownCommand: String =>
           Error(s"Unknown command: $unknownCommand")
@@ -61,11 +73,16 @@ class TagMode(untaggedImages: UntaggedImages,
   }
 
   def start(): CommandResult = {
-    logger.debug("Tag mode starting.")
+    logger.info("Tag mode starting.")
 
     val imageFiles = ImageFiles.imageFilesIn(imageSource.toString)
     if (imageFiles != null && !imageFiles.isEmpty) {
-      untaggedImages.untaggedImageFiles = imageFiles
+      untaggedImages.untaggedImageFileURIs = imageFiles.map(_.toURI.toString)
+      Future {
+        view.root.style = "-fx-background-color: black;"
+        view.cache(untaggedImages.currentURI)
+        displayNextImageIfExists()
+      }
       OK
     }
     else
@@ -73,10 +90,16 @@ class TagMode(untaggedImages: UntaggedImages,
   }
 
   private def displayNextImageIfExists(): CommandResult = {
-    untaggedImages.currentImage.cancel()
-    val result = if (untaggedImages.hasNextImage()) OK else DisplayMessage("Tagging Done :3")
-    if (untaggedImages.hasNextImage())
-      Future { untaggedImages.nextImage() }
-    result
+    if (!taggingAlmostDone) {
+        if (!untaggedImages.hasNext)
+          taggingAlmostDone = true
+        else
+          untaggedImages.nextImageURI()
+      OK
+    }
+    else {
+      view.root.style = "-fx-background-color: green;"
+      DisplayMessage("Tagging Done :3")
+    }
   }
 }

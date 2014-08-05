@@ -1,57 +1,24 @@
 package model
 
-import java.io.File
-
 import event.Observable
 
-import scalafx.scene.image.Image
-
 class UntaggedImages extends Observable {
-  private var _untaggedImageFiles = Seq.empty[File]
-  private var imageIndex: Int = -1
-  private var preloadedImage: Option[Image] = None
-  private var _currentImage: Image = _
-  private var _previousImage: Option[Image] = None
+  private var _untaggedImageFileURIs = Seq.empty[String]
+  private var imageIndex: Int = 0 // Always stays 1 ahead of currently displayed image URI unless tagging is almost done.
 
-  def untaggedImageFiles_=(files: Seq[File]): Unit = {
-    _untaggedImageFiles = files
-    // Starts at -1 so nextImage() sets the correct image as the current image (the one at index 0)
-    imageIndex = -1
-    nextImage()
+  def untaggedImageFileURIs_=(fileURIs: Seq[String]): Unit = {
+    _untaggedImageFileURIs = fileURIs
   }
 
-  def untaggedImageFiles = _untaggedImageFiles
+  def untaggedImageFileURIs = _untaggedImageFileURIs
   
-  def nextImage(): Unit = {
-    if (hasNextImage) {
-      _previousImage = Some(currentImage)
+  def nextImageURI(): Unit = {
+    if (hasNext)
       imageIndex += 1
-
-      preloadedImage match {
-        case Some(image) =>
-          _currentImage = image
-        case None =>
-          _currentImage = loadImage(_untaggedImageFiles(imageIndex).toURI.toString)
-      }
-
-      if (hasNextImage)
-        preloadedImage = Some(loadImage(_untaggedImageFiles(imageIndex + 1).toURI.toString))
-
-      notifyObservers()
-    }
-    else
-      throw new Exception("There is no next image; you've run out of images to tag!")
+    notifyObservers()
   }
   
-  private def loadImage(imageFilePath: String): Image =
-    new Image(imageFilePath, true)
-
-  def hasNextImage(): Boolean =
-    imageIndex < untaggedImageFiles.size
+  def hasNext: Boolean = imageIndex < _untaggedImageFileURIs.length  
   
-  def currentImageFile = _untaggedImageFiles(imageIndex)
-
-  def currentImage = _currentImage
-
-  def previousImage = _previousImage
+  def currentURI = _untaggedImageFileURIs(imageIndex)
 }

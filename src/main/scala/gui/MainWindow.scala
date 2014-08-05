@@ -47,8 +47,8 @@ class MainWindow(commandListener: CommandListener) extends PrimaryStage {
 
   def currentModeView = _currentModeView
   
-  def currentModeView_=(modeWidget: Node): Unit = Future {
-    imageDisplayArea.content = modeWidget
-    _currentModeView = modeWidget
+  def currentModeView_=(modeRoot: Node): Unit = Future {
+    imageDisplayArea.content = modeRoot
+    _currentModeView = modeRoot
   }
 }
