@@ -5,6 +5,7 @@ import java.nio.file.Path
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
 import event.CommandHandler
+import gui.SearchModeView
 import model.SearchResults
 import tag.db.SlickTagDb
 
@@ -12,6 +13,8 @@ class SearchMode(imageSource: Path,
                  tagDb: SlickTagDb,
                  searchResults: SearchResults,
                  val imagesPerRow: Int) extends Mode with LazyLogging {
+
+  override val view: SearchModeView = new SearchModeView
 
   override val commandHandler: CommandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {

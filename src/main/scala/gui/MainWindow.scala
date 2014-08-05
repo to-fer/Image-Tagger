@@ -9,7 +9,7 @@ import scala.concurrent.Future
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.scene.control.TextField
 import scalafx.scene.layout.{BorderPane, StackPane}
-import scalafx.scene.{Parent, Scene}
+import scalafx.scene.{Node, Scene}
 
 class MainWindow(commandListener: CommandListener) extends PrimaryStage {
   title = "Tagger"
@@ -43,13 +43,12 @@ class MainWindow(commandListener: CommandListener) extends PrimaryStage {
     }
   }
 
-  private var _currentModeView: Parent = _
+  private var _currentModeView: Node = _
 
   def currentModeView = _currentModeView
   
-  def currentModeView_=(modeWidget: Parent): Unit = Future {
-    imageDisplayArea.children.clear()
-    imageDisplayArea.children.add(modeWidget)
+  def currentModeView_=(modeWidget: Node): Unit = Future {
+    imageDisplayArea.content = modeWidget
     _currentModeView = modeWidget
   }
 }

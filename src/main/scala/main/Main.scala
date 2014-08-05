@@ -5,16 +5,13 @@ import java.nio.file.{Files, Path, Paths}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import event.CommandListener
 import event.mode._
-import gui.{MainWindow, SearchModeView}
-import model.{SearchResults, UntaggedImages}
+import gui.MainWindow
+import model.{ActiveMode, SearchResults, UntaggedImages}
 import tag.db.SlickTagDb
+import util.JavaFXExecutionContext.javaFxExecutionContext
 
 import scala.concurrent.Future
-import util.JavaFXExecutionContext.javaFxExecutionContext
 import scalafx.application.JFXApp
-import scalafx.scene.Parent
-import scalafx.scene.image.ImageView
-import scalafx.scene.layout.StackPane
 
 object Main extends JFXApp with LazyLogging {
 
@@ -37,19 +34,12 @@ object Main extends JFXApp with LazyLogging {
   val tagDb = new SlickTagDb("tag-db.sqlite")
   val untaggedImages = new UntaggedImages
   val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
-  val tagModeView = new StackPane {
-    style = "-fx-background-color: black;"
-  }
-  var modeViewMap = Map.empty[Mode, Parent]
-  modeViewMap = Map(tagMode -> tagModeView) ++ modeViewMap
 
   val searchResults = new SearchResults
   val searchMode = new SearchMode(imageSourceDir, tagDb, searchResults, 5)
-  val searchModeView = new SearchModeView
-  modeViewMap = Map(searchMode -> searchModeView.imageViewScroll) ++ modeViewMap
 
   val activeMode = new ActiveMode
-  val modeSwitcher = new ModeSwitcher(activeMode, modeViewMap)
+  val modeSwitcher = new ModeSwitcher(activeMode)
 
   val modeSwitchObserver = () => {
     // TODO clean this up?
@@ -57,13 +47,8 @@ object Main extends JFXApp with LazyLogging {
     activeMode.currentMode match {
       case Some(newMode) => {
         commandListener.commandHandler = newMode.commandHandler
+        mainWindow.currentModeView = newMode.view.root
       }
-      case None =>
-        throw new Exception(noModeSwitchErrorMsg)
-    }
-    activeMode.currentModeView match {
-      case Some(newModeView) =>
-        mainWindow.currentModeView = newModeView
       case None =>
         throw new Exception(noModeSwitchErrorMsg)
     }
@@ -73,9 +58,8 @@ object Main extends JFXApp with LazyLogging {
   val showNextImageObserver = () => {
     Future {
       val current = untaggedImages.currentImage
-      logger.debug(s"Showing next image $current")
-      tagModeView.children.clear()
-      tagModeView.children.add(new ImageView(current))
+      logger.info(s"Showing next image $current")
+      tagMode.view.show(current)
     }
     ()
   }
@@ -83,7 +67,7 @@ object Main extends JFXApp with LazyLogging {
 
   val searchObserver = () => {
     logger.debug("Showing search results of size " + searchResults.imagePaths.length)
-    searchModeView.show(searchResults.imagePaths)
+    searchMode.view.show(searchResults.imagePaths)
   }
   searchResults.addObserver(searchObserver)
 

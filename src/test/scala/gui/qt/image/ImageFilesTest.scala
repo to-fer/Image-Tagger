@@ -1,13 +1,13 @@
 package gui.qt.image
 
-import org.specs2.mutable.Specification
 import java.nio.file._
-import org.specs2.specification.{Step, Fragments}
-import java.io.IOException
-import java.nio.file.attribute.BasicFileAttributes
+
+import image.ImageFiles
+import org.specs2.mutable.Specification
+import org.specs2.specification.{Fragments, Step}
 
 class ImageFilesTest extends ImageFileSpec {
-  import imageDirSetup.testImageDir
+  import gui.qt.image.imageDirSetup.testImageDir
 
   "ImageFiles" should {
 

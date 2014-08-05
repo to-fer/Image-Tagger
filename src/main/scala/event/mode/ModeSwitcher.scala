@@ -1,8 +1,10 @@
 package event.mode
 
+import model.ActiveMode
+
 import scalafx.scene.Parent
 
-class ModeSwitcher(activeMode: ActiveMode, modeViewMap: Map[Mode, Parent]) {
+class ModeSwitcher(activeMode: ActiveMode){
   def switch(newMode: Mode): Unit =
-    activeMode.setModeAndView(newMode, modeViewMap(newMode))
+    activeMode.setMode(newMode)
 }

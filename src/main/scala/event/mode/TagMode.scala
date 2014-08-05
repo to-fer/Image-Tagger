@@ -5,6 +5,7 @@ import java.nio.file.{Files, Path}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
 import event.CommandHandler
+import gui.TagModeView
 import image.ImageFiles
 import model.UntaggedImages
 import tag.db.SlickTagDb
@@ -16,6 +17,8 @@ class TagMode(untaggedImages: UntaggedImages,
               tagDb: SlickTagDb,
               imageSource: Path,
               imageDest: Path) extends Mode with LazyLogging {
+
+  override val view: TagModeView = new TagModeView
 
   override val commandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {

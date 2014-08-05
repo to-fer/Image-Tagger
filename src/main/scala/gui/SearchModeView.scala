@@ -8,8 +8,8 @@ import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.GridPane
 import scalafx.stage.Screen
 
-class SearchModeView(imagesPerRow: Int = 5) {
-  val imageViewScroll = new ScrollPane {
+class SearchModeView(imagesPerRow: Int = 5) extends ModeView {
+  override val root: ScrollPane = new ScrollPane {
     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
   }
@@ -17,7 +17,7 @@ class SearchModeView(imagesPerRow: Int = 5) {
   private val imageViewGrid = new GridPane {
     style = "-fx-background-color: black;"
   }
-  imageViewScroll.content = imageViewGrid
+  root.content = imageViewGrid
 
   private val imageWidth = Screen.primary.bounds.width/imagesPerRow
   private val imageHeight = Screen.primary.bounds.height/imagesPerRow
@@ -31,8 +31,8 @@ class SearchModeView(imagesPerRow: Int = 5) {
     imageViewGrid.content = imageViews
   }
 
+  // To avoid memory problems
   def hideImages(): Unit = {
-    imageViewScroll.content = null
+    root.content = null
   }
-
 }
