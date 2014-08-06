@@ -25,9 +25,15 @@ class SearchModeView(imagesPerRow: Int = 5) extends ModeView {
 
   def show(imagePaths: Seq[String]): Unit = Future {
     shownImages = imagePaths.map(path => {
-      new Image(path, imageWidth, imageHeight, true, true, true) 
+      new Image(path, true)
     })
-    val imageViews = shownImages.map(new ImageView(_))
+    val imageViews = shownImages.map(i => new ImageView {
+      preserveRatio = true
+      smooth = true
+      fitWidth = imageWidth
+      fitHeight = imageHeight
+      image = i
+    })
     imageViewGrid.content = imageViews
   }
 
