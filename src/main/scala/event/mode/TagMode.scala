@@ -1,6 +1,7 @@
 package event.mode
 
 import java.io.File
+import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 
 import com.typesafe.scalalogging.slf4j.LazyLogging
@@ -55,7 +56,8 @@ class TagMode(untaggedImages: UntaggedImages,
         case QuitCommand(_) => ModeSwitch
         case "" => OK // Ignore empty inputs
         case TagCommand(tags) if (tags.forall(tagDb.tags.contains)) => {
-          val imageFile = Paths.get(untaggedImages.currentURI)
+          val filePathString = new URI(untaggedImages.currentURI).getPath()
+          val imageFile = Paths.get(filePathString)
           val destFile = imageDest resolve imageFile.getFileName
           tagDb.tagFile(destFile, tags)
 
