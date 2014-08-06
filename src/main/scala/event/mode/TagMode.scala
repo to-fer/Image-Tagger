@@ -82,7 +82,7 @@ class TagMode(untaggedImages: UntaggedImages,
       untaggedImages.untaggedImageFileURIs = imageFiles.map(_.toURI.toString)
       Future {
         view.root.style = "-fx-background-color: black;"
-        view.cache(untaggedImages.currentURI)
+        view.cache(untaggedImages.nextURI)
         displayNextImageIfExists()
       }
       OK

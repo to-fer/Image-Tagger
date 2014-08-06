@@ -56,7 +56,7 @@ object Main extends JFXApp with LazyLogging {
   var taggingAlmostDone = false
   val showNextImageObserver = () => {
     if (!taggingAlmostDone) {
-      val current = untaggedImages.currentURI
+      val current = untaggedImages.nextURI
       tagMode.view.cache(current)
       logger.info(s"Next image: $current")
 
