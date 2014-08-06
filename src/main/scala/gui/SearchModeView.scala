@@ -3,18 +3,21 @@ package gui
 import util.JavaFXExecutionContext.javaFxExecutionContext
 
 import scala.concurrent.Future
+import scalafx.geometry.Pos
 import scalafx.scene.control.ScrollPane
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.GridPane
+import scalafx.scene.layout.TilePane
 import scalafx.stage.Screen
 
 class SearchModeView(imagesPerRow: Int = 5) extends ModeView {
   override val root: ScrollPane = new ScrollPane {
+    fitToWidth = true
+    fitToHeight = true
     hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
     vbarPolicy = ScrollPane.ScrollBarPolicy.AS_NEEDED
   }
 
-  private val imageViewGrid = new GridPane {
+  private val imageViewGrid = new TilePane {
     style = "-fx-background-color: black;"
   }
   root.content = imageViewGrid
@@ -28,6 +31,7 @@ class SearchModeView(imagesPerRow: Int = 5) extends ModeView {
       new Image(path, true)
     })
     val imageViews = shownImages.map(i => new ImageView {
+      alignmentInParent = Pos.CENTER
       preserveRatio = true
       smooth = true
       fitWidth = imageWidth
@@ -39,6 +43,6 @@ class SearchModeView(imagesPerRow: Int = 5) extends ModeView {
 
   // To avoid memory problems
   def hideImages(): Unit = {
-    root.content = null
+    imageViewGrid.children.clear()
   }
 }
