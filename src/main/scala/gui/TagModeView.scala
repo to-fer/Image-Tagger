@@ -22,7 +22,6 @@ class TagModeView extends ModeView {
   }
 
   def showNext(): Unit = {
-    println("Cache: " + imageViewCache.length)
     // Remove tail so cache always contains the current and next ImageView
     root.content = imageViewCache.tail(0)
     imageViewCache = imageViewCache.dropRight(1)
