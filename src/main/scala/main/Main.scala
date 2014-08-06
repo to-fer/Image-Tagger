@@ -46,8 +46,10 @@ object Main extends JFXApp with LazyLogging {
         commandListener.commandHandler = newMode.commandHandler
         mainWindow.currentModeView = newMode.view.root
       }
-      case None =>
-        throw new Exception(noModeSwitchErrorMsg) // TODO clean this up?
+      case None => {
+        class NoModeSwitchException(errorMessage: String) extends Exception(errorMessage)
+        throw new NoModeSwitchException(noModeSwitchErrorMsg)
+      }
     }
   }
   activeMode.addObserver(modeSwitchObserver)
