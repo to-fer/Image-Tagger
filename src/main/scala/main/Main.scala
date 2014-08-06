@@ -25,7 +25,6 @@ object Main extends JFXApp with LazyLogging {
 
   // TODO use config file instead of hard coding this
   val imageSourceDir = Paths.get(sys.env("HOME"), "images", "pony")
-  createIfNotExists(imageSourceDir)
   val imageDestDir = imageSourceDir resolve "Tagged"
   createIfNotExists(imageDestDir)
 

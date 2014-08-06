@@ -7,7 +7,7 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
 import event.CommandHandler
 import gui.TagModeView
-import image.ImageFiles
+import file.ImageFiles
 import model.UntaggedImages
 import tag.db.SlickTagDb
 import util.JavaFXExecutionContext.javaFxExecutionContext

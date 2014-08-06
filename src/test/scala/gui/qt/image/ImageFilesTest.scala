@@ -2,7 +2,7 @@ package gui.qt.image
 
 import java.nio.file._
 
-import image.ImageFiles
+import file.ImageFiles
 import org.specs2.mutable.Specification
 import org.specs2.specification.{Fragments, Step}
 
