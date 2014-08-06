@@ -9,6 +9,9 @@ import gui.SearchModeView
 import model.SearchResults
 import tag.db.SlickTagDb
 
+import scala.concurrent.Future
+import util.JavaFXExecutionContext.javaFxExecutionContext
+
 class SearchMode(imageSource: Path,
                  tagDb: SlickTagDb,
                  searchResults: SearchResults,
@@ -19,7 +22,10 @@ class SearchMode(imageSource: Path,
   override val commandHandler: CommandHandler = new CommandHandler {
     override def handleCommand(cmd: String): CommandResult = cmd match {
       case "" => OK // Ignore empty inputs
-      case TagModeCommand(_) => ModeSwitch
+      case TagModeCommand(_) => {
+        Future { view.hideImages() }
+        ModeSwitch
+      }
       case tag: String => {
         logger.info(s"Search query: $tag")
         if (tagDb.tags.contains(tag)) {
