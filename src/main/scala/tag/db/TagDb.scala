@@ -7,7 +7,8 @@ import java.nio.file.{Path, Files, Paths}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
 class TagDb(dbPath: String) extends LazyLogging {
-  private var _tags: Set[String] = Set.empty[String]
+  private var _tags: Set[String] = Set.empty
+  private var aliases: Map[String, String] = Map.empty
 
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
     def tagName = column[String]("TAG_NAME", O.PrimaryKey)
@@ -55,6 +56,21 @@ class TagDb(dbPath: String) extends LazyLogging {
       throw new IllegalArgumentException("That tag already exists!")
   }
 
+  def addTag(tagName: String, aliases: List[String]): Unit = database withDynTransaction {
+    logger.info(s"Adding tag $tagName with aliases $aliases.")
+    if (!this.tags.contains(tagName) && !this.aliases.contains(tagName) &&
+        this.tags.forall(!aliases.contains(_)) && this.aliases.forall(!aliases.contains(_))) {
+      tagTable += tagName
+      _tags = (_tags + tagName)
+      this.aliases ++= aliases
+      val rowsToAdd = aliases.map((_, tagName))
+      tagAliasesTable ++= rowsToAdd
+    }
+    else
+      // TODO use a proper error message. Report problem to GUI
+      throw new IllegalArgumentException("One of those tags already exists!")
+  }
+
   def tags: Set[String] = {
     if (_tags.isEmpty) {
       _tags = database withDynTransaction {
@@ -66,10 +82,11 @@ class TagDb(dbPath: String) extends LazyLogging {
   }
 
   def tagFile(pathToTag: Path, tagsToApply: Seq[String]): Unit = {
-    if (tagsToApply.forall(tags.contains)) {
-      logger.info(s"Tagging $pathToTag with $tagsToApply.")
+    val realNameTags = tagsToApply.map(convertAlias).distinct
+    if (realNameTags.forall(tags.contains)) {
+      logger.info(s"Tagging $pathToTag with $realNameTags.")
       database withDynTransaction {
-        val rowsToAdd = tagsToApply.map((pathToTag.toString, _))
+        val rowsToAdd = realNameTags.map((pathToTag.toString, _))
         taggedFilesTable ++= rowsToAdd
       }
     }
@@ -81,12 +98,19 @@ class TagDb(dbPath: String) extends LazyLogging {
     tagFile(pathToTag, List(tagToApply))
 
   def filesWithTag(tag: String): List[File] = {
+    val realTag = convertAlias(tag)
     val pathsWithTag = database withDynTransaction {
-      val rowsWithTag = taggedFilesTable filter (_.tagName is tag) // "is" is a Column[_]'s "=="
+      val rowsWithTag = taggedFilesTable filter (_.tagName is realTag) // "is" is a Column[_]'s "=="
       rowsWithTag map (_.path)
     }.list
 
     pathsWithTag.map(new File(_))
   }
 
+  private def convertAlias(tag: String): String = {
+    if (aliases.contains(tag))
+      aliases(tag)
+    else
+      tag
+  }
 }
