@@ -7,13 +7,13 @@ import command._
 import event.CommandHandler
 import gui.SearchModeView
 import model.SearchResults
-import tag.db.SlickTagDb
+import tag.db.TagDb
 
 import scala.concurrent.Future
 import util.JavaFXExecutionContext.javaFxExecutionContext
 
 class SearchMode(imageSource: Path,
-                 tagDb: SlickTagDb,
+                 tagDb: TagDb,
                  searchResults: SearchResults,
                  val imagesPerRow: Int) extends Mode with LazyLogging {
 

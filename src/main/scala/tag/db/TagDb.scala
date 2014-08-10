@@ -6,7 +6,7 @@ import Database.dynamicSession
 import java.nio.file.{Path, Files, Paths}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
-class SlickTagDb(dbPath: String) extends LazyLogging {
+class TagDb(dbPath: String) extends LazyLogging {
   private var _tags: Set[String] = Set.empty[String]
 
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {

@@ -10,14 +10,14 @@ import event.CommandHandler
 import gui.TagModeView
 import file.ImageFiles
 import model.UntaggedImages
-import tag.db.SlickTagDb
+import tag.db.TagDb
 import util.JavaFXExecutionContext.javaFxExecutionContext
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 class TagMode(untaggedImages: UntaggedImages,
-              tagDb: SlickTagDb,
+              tagDb: TagDb,
               imageSource: Path,
               imageDest: Path) extends Mode with LazyLogging {
 
