@@ -100,7 +100,7 @@ class TagDb(dbPath: String) extends LazyLogging {
   def filesWithTag(tag: String): List[File] = {
     val realTag = convertAlias(tag)
     val pathsWithTag = database withDynTransaction {
-      val rowsWithTag = taggedFilesTable filter (_.tagName is realTag) // "is" is a Column[_]'s "=="
+      val rowsWithTag = taggedFilesTable filter (_.tagName === realTag) // "===" is a Column[_]'s "=="
       rowsWithTag map (_.path)
     }.list
 
