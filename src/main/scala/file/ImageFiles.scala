@@ -7,7 +7,7 @@ import scala.util.matching.Regex
 object ImageFiles {
 
   lazy val animatedImageExtensions = "gif" :: "GIF" :: "apng" :: "APNG" :: Nil
-  lazy val imageExtensions = "png" :: "PNG" :: "jpg" :: "JPG" :: animatedImageExtensions
+  lazy val imageExtensions = "png" :: "PNG" :: "jpg" :: "JPG" :: "jpeg" :: "JPEG" :: animatedImageExtensions
 
   def isImage(path: String): Boolean = {
     val imageRegex = fileExtensionRegex(imageExtensions)
