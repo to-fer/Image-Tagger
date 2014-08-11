@@ -7,7 +7,7 @@ import event.CommandListener
 import event.mode._
 import gui.MainWindow
 import model.{ActiveMode, SearchResults, UntaggedImages}
-import tag.db.TagDb
+import tag.db.TaggerDb
 
 import scalafx.application.JFXApp
 
@@ -28,7 +28,7 @@ object Main extends JFXApp with LazyLogging {
   val imageDestDir = imageSourceDir resolve "Tagged"
   createIfNotExists(imageDestDir)
 
-  val tagDb = new TagDb("tag-db.sqlite")
+  val tagDb = new TaggerDb("tag-db.sqlite")
   val untaggedImages = new UntaggedImages
   val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
 

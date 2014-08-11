@@ -7,13 +7,13 @@ import command._
 import event.CommandHandler
 import gui.SearchModeView
 import model.SearchResults
-import tag.db.TagDb
+import tag.db.TaggerDb
 
 import scala.concurrent.Future
 import util.JavaFXExecutionContext.javaFxExecutionContext
 
 class SearchMode(imageSource: Path,
-                 tagDb: TagDb,
+                 tagDb: TaggerDb,
                  searchResults: SearchResults,
                  val imagesPerRow: Int) extends Mode with LazyLogging {
 
@@ -28,7 +28,7 @@ class SearchMode(imageSource: Path,
       }
       case tag: String => {
         logger.info(s"Search query: $tag")
-        if (tagDb.tags.contains(tag)) {
+        if (tagDb.contains(tag)) {
           val taggedImageFiles = tagDb.filesWithTag(tag)
           if (!taggedImageFiles.isEmpty) {
             val existingTaggedImageFiles = taggedImageFiles.filter(_.exists())

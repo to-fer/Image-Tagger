@@ -10,14 +10,14 @@ import event.CommandHandler
 import gui.TagModeView
 import file.ImageFiles
 import model.UntaggedImages
-import tag.db.TagDb
+import tag.db.TaggerDb
 import util.JavaFXExecutionContext.javaFxExecutionContext
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 class TagMode(untaggedImages: UntaggedImages,
-              tagDb: TagDb,
+              tagDb: TaggerDb,
               imageSource: Path,
               imageDest: Path) extends Mode with LazyLogging {
 
@@ -36,10 +36,20 @@ class TagMode(untaggedImages: UntaggedImages,
         case AddTagCommand(tag) => {
           if (tag.contains(" "))
             Error("Tags cannot contain spaces.")
-          else if (tagDb.tags.contains(tag))
+          else if (tagDb.contains(tag))
             Error("That tag already exists.")
           else {
             tagDb.addTag(tag)
+            OK
+          }
+        }
+        case AddAliasesCommand(tag, aliases) => {
+          if (aliases.find(_.contains(" ")).isDefined)
+            Error("Tags cannot contain spaces.")
+          else if (aliases.forall(tagDb.contains(_)))
+            Error("Alias already defined.")
+          else {
+            tagDb.addAlias(tag, aliases)
             OK
           }
         }
@@ -55,7 +65,7 @@ class TagMode(untaggedImages: UntaggedImages,
         }
         case QuitCommand(_) => ModeSwitch
         case "" => OK // Ignore empty inputs
-        case TagCommand(tags) if (tags.forall(tagDb.tags.contains)) => {
+        case TagCommand(tags) if (tags.forall(tagDb.contains(_))) => {
           val filePathString = new URI(untaggedImages.currentURI).getPath()
           val imageFile = Paths.get(filePathString)
           val destFile = imageDest resolve imageFile.getFileName

@@ -12,24 +12,24 @@ class TagDbTest extends TestDbSpec with ScalaCheck {
     "Create a database file if it doesn't exist" in {
       val databasePath = testDbDir resolve "this file does not exist.sqlite"
 
-      new TagDb(databasePath.toString)
+      new TaggerDb(databasePath.toString)
       Files.exists(databasePath) mustEqual true
     }
 
     "addTag('tag that doesn't exist')" in {
       val databasePath = testDbDir resolve "tag-doesnt-exist-test.sqlite"
 
-      val tagDb = new TagDb(databasePath.toString)
+      val tagDb = new TaggerDb(databasePath.toString)
       val tagToAdd = "Bananas"
       tagDb.addTag(tagToAdd)
 
-      tagDb.tags must contain(tagToAdd)
+      tagDb.contains(tagToAdd) mustEqual true
     }
 
     "addTag('tag that already exists')" in {
       val databasePath = testDbDir resolve "tag-already-exists-test.sqlite"
 
-      val tagDb = new TagDb(databasePath.toString)
+      val tagDb = new TaggerDb(databasePath.toString)
       val tagToAdd = "Toast"
       tagDb.addTag(tagToAdd)
       tagDb.addTag(tagToAdd) must throwA[IllegalArgumentException]
@@ -38,12 +38,12 @@ class TagDbTest extends TestDbSpec with ScalaCheck {
     "addTag to database" in {
       val databasePath = testDbDir resolve "tag-test.sqlite"
 
-      val tagDb1 = new TagDb(databasePath.toString)
+      val tagDb1 = new TaggerDb(databasePath.toString)
       val tagToAdd = "THEBESTTHEBESTTHEBEST"
       tagDb1.addTag(tagToAdd)
 
-      val tagDb2 = new TagDb(databasePath.toString)
-      tagDb2.tags must contain(tagToAdd)
+      val tagDb2 = new TaggerDb(databasePath.toString)
+      tagDb2.contains(tagToAdd) mustEqual true
     }
 
     "tagFile(_, 'existing tag')" in {
@@ -51,7 +51,7 @@ class TagDbTest extends TestDbSpec with ScalaCheck {
       val pathToTag = Paths.get("a-tree.jpg")
       val databasePath = testDbDir resolve "file-tag-test.sqlite"
 
-      val tagDb = new TagDb(databasePath.toString)
+      val tagDb = new TaggerDb(databasePath.toString)
       tagDb.addTag(tag)
       tagDb.tagFile(pathToTag, tag)
       tagDb.filesWithTag(tag) mustEqual List(pathToTag.toFile)
@@ -60,7 +60,7 @@ class TagDbTest extends TestDbSpec with ScalaCheck {
     "tagFile(_, 'tag that doesn't exist')" in {
       val databasePath = testDbDir resolve "tag-doesnt-exist-test.sqlite"
 
-      val tagDb = new TagDb(databasePath.toString)
+      val tagDb = new TaggerDb(databasePath.toString)
       tagDb.tagFile(
         Paths.get("test-file"),
         "this tag doesn't exist!"

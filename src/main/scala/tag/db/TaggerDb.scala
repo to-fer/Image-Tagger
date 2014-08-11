@@ -6,9 +6,9 @@ import Database.dynamicSession
 import java.nio.file.{Path, Files, Paths}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
-class TagDb(dbPath: String) extends LazyLogging {
+class TaggerDb(dbPath: String) extends LazyLogging {
   private var _tags: Set[String] = Set.empty
-  private var aliases: Map[String, String] = Map.empty
+  private var _aliases: Map[String, String] = Map.empty
 
   private class Tags(tag: Tag) extends Table[String](tag, "TAGS") {
     def tagName = column[String]("TAG_NAME", O.PrimaryKey)
@@ -45,10 +45,20 @@ class TagDb(dbPath: String) extends LazyLogging {
       (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
     }
   }
+  else {
+    _tags = database withDynTransaction {
+      for (row <- tagTable) yield row.tagName
+    }.list.toSet
+
+    _aliases = database withDynTransaction {
+      for (alias <- tagAliasesTable) yield (alias.alias -> alias.aliasedTag)
+    }.toMap
+  }
+
 
   def addTag(tagName: String): Unit = database withDynTransaction {
     logger.info(s"Adding tag $tagName.")
-    if (!tags.contains(tagName)) {
+    if (!contains(tagName)) {
       tagTable += tagName
       _tags = _tags + tagName
     }
@@ -58,35 +68,39 @@ class TagDb(dbPath: String) extends LazyLogging {
 
   def addTag(tagName: String, aliases: List[String]): Unit = database withDynTransaction {
     logger.info(s"Adding tag $tagName with aliases $aliases.")
-    if (!this.tags.contains(tagName) && !this.aliases.contains(tagName) &&
-        this.tags.forall(!aliases.contains(_)) && this.aliases.forall(!aliases.contains(_))) {
+    if (!contains(tagName) && aliases.forall(!contains(_))) {
       tagTable += tagName
       _tags = (_tags + tagName)
-      this.aliases ++= aliases
-      val rowsToAdd = aliases.map((_, tagName))
-      tagAliasesTable ++= rowsToAdd
+      addAlias(tagName, aliases)
     }
     else
       // TODO use a proper error message. Report problem to GUI
       throw new IllegalArgumentException("One of those tags already exists!")
   }
 
-  def tags: Set[String] = {
-    if (_tags.isEmpty) {
-      _tags = database withDynTransaction {
-        for (row <- tagTable) yield row.tagName
-      }.list.toSet
+  def addAlias(tag: String, aliases: List[String]): Unit = database withDynTransaction {
+    logger.info(s"Adding aliases $aliases to tag $tag.")
+    if (contains(tag)) {
+      if (aliases.forall(!contains(_))) {
+        aliases.foreach(a => {
+          _aliases = _aliases ++ Map(a -> tag)
+        })
+        val rowsToAdd = aliases.map((_, tag))
+        tagAliasesTable ++= rowsToAdd
+      }
+      else
+        throw new IllegalArgumentException("Alias already defined as an alias or tag!")
     }
-
-    _tags
+    else
+      throw new IllegalArgumentException("You may only add aliases to a tag that is already defined!")
   }
 
-  def tagFile(pathToTag: Path, tagsToApply: Seq[String]): Unit = {
-    val realNameTags = tagsToApply.map(convertAlias).distinct
-    if (realNameTags.forall(tags.contains)) {
-      logger.info(s"Tagging $pathToTag with $realNameTags.")
+  def tagFile(tagPath: Path, maybeAliasedTags: Seq[String]): Unit = {
+    val tags = maybeAliasedTags.map(convertAlias).distinct
+    if (tags.forall(_tags.contains)) {
+      logger.info(s"Tagging $tagPath with $tags.")
       database withDynTransaction {
-        val rowsToAdd = realNameTags.map((pathToTag.toString, _))
+        val rowsToAdd = tags.map((tagPath.toString, _))
         taggedFilesTable ++= rowsToAdd
       }
     }
@@ -108,9 +122,12 @@ class TagDb(dbPath: String) extends LazyLogging {
   }
 
   private def convertAlias(tag: String): String = {
-    if (aliases.contains(tag))
-      aliases(tag)
+    if (_aliases.contains(tag))
+      _aliases(tag)
     else
       tag
   }
+
+  def contains(tag: String): Boolean =
+    _aliases.contains(tag) || _tags.contains(tag)
 }
