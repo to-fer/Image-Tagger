@@ -55,7 +55,6 @@ class TaggerDb(dbPath: String) extends LazyLogging {
     }.toMap
   }
 
-
   def addTag(tagName: String): Unit = database withDynTransaction {
     logger.info(s"Adding tag $tagName.")
     if (!contains(tagName)) {

@@ -1,14 +1,14 @@
 package event.mode
 
-import java.io.File
+import java.io.{File, IOException}
 import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
 import event.CommandHandler
-import gui.TagModeView
 import file.ImageFiles
+import gui.TagModeView
 import model.UntaggedImages
 import tag.db.TaggerDb
 import util.JavaFXExecutionContext.javaFxExecutionContext
