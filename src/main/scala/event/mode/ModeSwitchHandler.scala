@@ -13,6 +13,5 @@ class ModeSwitchHandler(modeSwitcher: ModeSwitcher, searchMode: SearchMode, tagM
   override def handleCommand(cmd: String): CommandResult = cmd match {
     case TagModeCommand(_) => startAndSwitchMode(tagMode)
     case SearchModeCommand(_) => startAndSwitchMode(searchMode)
-    case QuitCommand(_) => startAndSwitchMode(searchMode)
   }
 }
