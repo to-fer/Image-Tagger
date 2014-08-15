@@ -1,6 +1,6 @@
 package event.mode
 
-import java.io.{File, IOException}
+import java.io.File
 import java.net.URI
 import java.nio.file.{Files, Path, Paths}
 
@@ -63,7 +63,6 @@ class TagMode(untaggedImages: UntaggedImages,
           }
           Await.result(result, Duration.Inf)
         }
-        case QuitCommand(_) => ModeSwitch
         case "" => OK // Ignore empty inputs
         case TagCommand(tags) if (tags.forall(tagDb.contains(_))) => {
           val filePathString = new URI(untaggedImages.currentURI).getPath()
