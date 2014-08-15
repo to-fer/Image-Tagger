@@ -6,6 +6,7 @@ import java.nio.file.{Files, Path, Paths}
 
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
+import command.debug.{CreateDatabaseCommand, DeleteDatabaseCommand}
 import event.CommandHandler
 import file.ImageFiles
 import gui.TagModeView
@@ -19,7 +20,8 @@ import scala.concurrent.{Await, Future}
 class TagMode(untaggedImages: UntaggedImages,
               tagDb: TaggerDb,
               imageSource: Path,
-              imageDest: Path) extends Mode with LazyLogging {
+              imageDest: Path)
+             (implicit override val debugEnabled: Boolean) extends Mode with LazyLogging {
 
   override val view: TagModeView = new TagModeView
 
@@ -77,6 +79,14 @@ class TagMode(untaggedImages: UntaggedImages,
           }
 
           Await.result(result, Duration.Inf)
+        }
+        case DeleteDatabaseCommand(_) if debugEnabled => {
+          tagDb.delete()
+          OK
+        }
+        case CreateDatabaseCommand(_) if debugEnabled => {
+          tagDb.create()
+          OK
         }
         case unknownCommand: String =>
           Error(s"Unknown command: $unknownCommand")

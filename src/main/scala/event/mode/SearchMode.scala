@@ -4,6 +4,7 @@ import java.nio.file.Path
 
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import command._
+import command.debug.{CreateDatabaseCommand, DeleteDatabaseCommand}
 import event.CommandHandler
 import gui.SearchModeView
 import model.SearchResults
@@ -15,7 +16,9 @@ import util.JavaFXExecutionContext.javaFxExecutionContext
 class SearchMode(imageSource: Path,
                  tagDb: TaggerDb,
                  searchResults: SearchResults,
-                 val imagesPerRow: Int) extends Mode with LazyLogging {
+                 val imagesPerRow: Int)
+                (implicit override val debugEnabled: Boolean)
+  extends Mode with LazyLogging {
 
   override val view: SearchModeView = new SearchModeView
 
@@ -26,6 +29,15 @@ class SearchMode(imageSource: Path,
         Future { view.hideImages() }
         ModeSwitch
       }
+      case DeleteDatabaseCommand(_) if debugEnabled => {
+        tagDb.delete()
+        OK
+      }
+      case CreateDatabaseCommand(_) if debugEnabled => {
+        tagDb.create()
+        OK
+      }
+      // This matches EVERYTHING. All other commands must be above it.
       case tag: String => {
         logger.info(s"Search query: $tag")
         if (tagDb.contains(tag)) {

@@ -27,7 +27,8 @@ object ConfigFileParser {
 
     resultMap = resultMap +
       ("source" -> findAndParse("source")) +
-      ("dest" -> findAndParse("dest"))
+      ("dest" -> findAndParse("dest")) +
+      ("debug" -> findAndParse("debug"))
 
     resultMap
   }

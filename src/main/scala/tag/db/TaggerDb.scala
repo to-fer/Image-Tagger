@@ -40,12 +40,8 @@ class TaggerDb(dbPath: Path) extends LazyLogging {
     logger.info(s"Path to database $dbPath doesn't exist. Creating.")
   private lazy val database = Database.forURL(s"jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
 
-  if (!Files.exists(dbPath)) {
-    logger.info("Initializing database.")
-    database withDynSession {
-      (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
-    }
-  }
+  if (!Files.exists(dbPath))
+    create()
   else {
     _tags = database withDynTransaction {
       for (row <- tagTable) yield row.tagName
@@ -130,4 +126,17 @@ class TaggerDb(dbPath: Path) extends LazyLogging {
 
   def contains(tag: String): Boolean =
     _aliases.contains(tag) || _tags.contains(tag)
+
+  def delete(): Unit = {
+    Files.delete(dbPath)
+    _aliases = Map.empty
+    _tags = Set.empty
+  }
+
+  def create(): Unit = {
+    logger.info("Initializing database.")
+    database withDynSession {
+      (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create
+    }
+  }
 }
