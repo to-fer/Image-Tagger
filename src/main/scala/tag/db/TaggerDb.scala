@@ -1,12 +1,13 @@
 package tag.db
 
 import java.io.File
+import java.nio.file.{Files, Path}
+
 import scala.slick.driver.SQLiteDriver.simple._
 import Database.dynamicSession
-import java.nio.file.{Path, Files, Paths}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
-class TaggerDb(dbPath: String) extends LazyLogging {
+class TaggerDb(dbPath: Path) extends LazyLogging {
   private var _tags: Set[String] = Set.empty
   private var _aliases: Map[String, String] = Map.empty
 
@@ -35,11 +36,11 @@ class TaggerDb(dbPath: String) extends LazyLogging {
   }
   private val taggedFilesTable = TableQuery[TaggedFiles]
 
-  if (!Files.exists(Paths.get(dbPath)))
+  if (!Files.exists(dbPath))
     logger.info(s"Path to database $dbPath doesn't exist. Creating.")
   private lazy val database = Database.forURL(s"jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
 
-  if (!Files.exists(Paths.get(dbPath))) {
+  if (!Files.exists(dbPath)) {
     logger.info("Initializing database.")
     database withDynSession {
       (tagTable.ddl ++ tagAliasesTable.ddl ++ taggedFilesTable.ddl).create

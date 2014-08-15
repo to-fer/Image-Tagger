@@ -42,7 +42,7 @@ object Main extends JFXApp with LazyLogging {
   val imageDestDir = configMap("dest").get
   createIfNotExists(imageDestDir)
 
-  val tagDb = new TaggerDb("tag-db.sqlite")
+  val tagDb = new TaggerDb(configFile.getParent resolve "tag-db.sqlite")
   val untaggedImages = new UntaggedImages
   val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
 
