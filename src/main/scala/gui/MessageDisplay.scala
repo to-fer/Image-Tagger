@@ -39,7 +39,7 @@ class MessageDisplay(width: Int) {
   private val messageDropShadow = dropShadow(Color.Blue)
   private val errorDropShadow = dropShadow(Color.Red)
 
-  def newFadeOut = () => new FadeTransition {
+  private def newFadeOut = () => new FadeTransition {
     duration = Duration(200)
     node = display
     fromValue.bind(display.opacity) // Allows smooth transition from current opacity to toValue
