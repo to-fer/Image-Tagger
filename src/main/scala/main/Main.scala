@@ -31,10 +31,10 @@ object Main extends JFXApp with LazyLogging {
     else
       Paths.get(sys.env("HOME"), ".image_tagger", "config.txt")
 
-  val (imageSourceDirOption, imageDestDirOption) = ConfigFileParser.parse(configFile)
+  val configMap = ConfigFileParser.parse(configFile)
   // TODO properly deal with Nones
-  val imageSourceDir = imageSourceDirOption.get
-  val imageDestDir = imageDestDirOption.get
+  val imageSourceDir = configMap("source").get
+  val imageDestDir = configMap("dest").get
   createIfNotExists(imageDestDir)
 
   val tagDb = new TaggerDb("tag-db.sqlite")

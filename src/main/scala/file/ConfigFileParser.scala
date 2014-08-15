@@ -4,7 +4,9 @@ import java.nio.file.{Paths, Files, Path}
 
 object ConfigFileParser {
 
-  def parse(configFile: Path): (Option[Path], Option[Path]) = {
+  def parse(configFile: Path): Map[String, Option[Path]] = {
+    var resultMap = Map.empty[String, Option[Path]]
+
     val configFileContents = Files.readAllLines(configFile).toArray(Array[String]())
     def findAndParse(configFileVar: String): Option[Path] = {
       val fileVar = configFileContents.find(_.contains(configFileVar))
@@ -18,9 +20,16 @@ object ConfigFileParser {
       })
       varValue
     }
+
     val imageSourceDir = findAndParse("source")
     val imageDestDir = findAndParse("dest")
-    (imageSourceDir, imageDestDir)
+    val debugSwitch = findAndParse("debug")
+
+    resultMap = resultMap +
+      ("source" -> findAndParse("source")) +
+      ("dest" -> findAndParse("dest"))
+
+    resultMap
   }
 
 }
