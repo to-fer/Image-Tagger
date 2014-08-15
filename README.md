@@ -24,11 +24,11 @@ dest = /home/dash/images/tagged
 
 This would tell Image Tagger to look in /home/dash/images by default for images to tag, and to move all tagged images to /home/dash/images/tagged after they've been tagged.
 
-###Commands
+##Commands
 
 Image Tagger supports CLI-like commands for quick tagging and searching. Commands are interpreted relative to the mode you're currently in.
 
-##Tag Mode
+###Tag Mode
 * add tag \<tag name without spaces\>
 
   Adds a tag to Image Tagger's database so that it may be used to tag images.
@@ -42,7 +42,7 @@ Image Tagger supports CLI-like commands for quick tagging and searching. Command
 
   Skips the currently displayed image without tagging or moving it and displays the next one in the image source directory. 
 
-##Search Mode
+###Search Mode
 * \<tag\>
 
   Displays all images tagged with \<tag\>. More than one tag can be used in a single search query. 
