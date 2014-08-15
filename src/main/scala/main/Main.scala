@@ -52,7 +52,8 @@ object Main extends JFXApp with LazyLogging {
   val activeMode = new ActiveMode
   val modeSwitcher = new ModeSwitcher(activeMode)
 
-  val messageObserver = () => { Future {
+  val messageObserver = () => {
+    Future {
       val message = messageModel.message
 
       message match {
