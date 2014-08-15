@@ -11,7 +11,7 @@ object ConfigFileParser {
       val varValue = fileVar.flatMap(v => {
         val equals = " = "
         if (v.contains(equals)) {
-          val path = v.substring(v.indexOf(equals) + equals.length + 1)
+          val path = v.substring(v.indexOf(equals) + equals.length)
           Some(Paths.get(path))
         }
         else None
