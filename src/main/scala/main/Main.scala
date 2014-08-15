@@ -5,6 +5,7 @@ import java.nio.file.{Files, Path, Paths}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import event.CommandListener
 import event.mode._
+import file.ConfigFileParser
 import gui.MainWindow
 import model.{ActiveMode, SearchResults, UntaggedImages}
 import tag.db.TaggerDb
@@ -23,9 +24,17 @@ object Main extends JFXApp with LazyLogging {
       Files.createDirectory(path)
     }
 
-  // TODO use config file instead of hard coding this
-  val imageSourceDir = Paths.get(sys.env("HOME"), "images", "pony")
-  val imageDestDir = imageSourceDir resolve "Tagged"
+  val osName = sys.props("os.name")
+  val configFile =
+    if (osName.contains("Linux"))
+      Paths.get(sys.env("HOME"), ".config", "image_tagger", "config")
+    else
+      Paths.get(sys.env("HOME"), ".image_tagger", "config.txt")
+
+  val (imageSourceDirOption, imageDestDirOption) = ConfigFileParser.parse(configFile)
+  // TODO properly deal with Nones
+  val imageSourceDir = imageSourceDirOption.get
+  val imageDestDir = imageDestDirOption.get
   createIfNotExists(imageDestDir)
 
   val tagDb = new TaggerDb("tag-db.sqlite")
