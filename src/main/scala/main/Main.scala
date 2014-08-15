@@ -6,16 +6,21 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 import event.CommandListener
 import event.mode._
 import file.ConfigFileParser
-import gui.MainWindow
-import model.{ActiveMode, SearchResults, UntaggedImages}
+import gui.{MainWindow, MessageDisplay}
+import model._
 import tag.db.TaggerDb
 
+import scala.concurrent.Future
+import util.JavaFXExecutionContext.javaFxExecutionContext
 import scalafx.application.JFXApp
 
 object Main extends JFXApp with LazyLogging {
 
-  val commandListener = new CommandListener
-  val mainWindow = new MainWindow(commandListener)
+  val messageModel = new MessageModel
+  val commandListener = new CommandListener(messageModel)
+  val fieldWidth = 400
+  val messageDisplay = new MessageDisplay(fieldWidth)
+  val mainWindow = new MainWindow(commandListener, messageDisplay, inputFieldWidth = fieldWidth)
   stage = mainWindow
 
   def createIfNotExists(path: Path): Unit =
@@ -46,6 +51,19 @@ object Main extends JFXApp with LazyLogging {
 
   val activeMode = new ActiveMode
   val modeSwitcher = new ModeSwitcher(activeMode)
+
+  val messageObserver = () => { Future {
+      val message = messageModel.message
+
+      message match {
+        case NormalMessage(msg) => messageDisplay.displayMessage(msg)
+        case ErrorMessage(msg) => messageDisplay.displayMessage(msg)
+      }
+
+    }
+    ()
+  }
+  messageModel.addObserver(messageObserver)
 
   val modeSwitchObserver = () => {
     val noModeSwitchErrorMsg = "Mode observer was notified, but no mode switch has occurred!"

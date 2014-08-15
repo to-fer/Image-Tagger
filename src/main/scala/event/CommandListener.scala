@@ -1,11 +1,12 @@
 package event
 
 import command._
+import model.{NormalMessage, ErrorMessage, MessageModel}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class CommandListener {
+class CommandListener(messageModel: MessageModel) {
   private var _modeCommandHandler: CommandHandler = _
   private var _modeSwitchHandler: CommandHandler = _
 
@@ -17,12 +18,12 @@ class CommandListener {
 
   def modeSwitchHandler_=(h: CommandHandler) = _modeSwitchHandler = h
 
-  def commandEntered(commandString: String, displayMessage: String => Unit): Unit = Future {
+  def commandEntered(commandString: String): Unit = Future {
     val commandResult = commandHandler.handleCommand(commandString)
     commandResult match {
       case OK =>
-      case Error(errorMsg) => displayMessage(errorMsg)
-      case DisplayMessage(msg) => displayMessage(msg)
+      case Error(errorMsg) => messageModel.message = new ErrorMessage(errorMsg)
+      case DisplayMessage(msg) => messageModel.message = new NormalMessage(msg)
       case QuitMode => modeSwitchHandler.handleCommand(commandString)
       case ModeSwitch => modeSwitchHandler.handleCommand(commandString)
     }

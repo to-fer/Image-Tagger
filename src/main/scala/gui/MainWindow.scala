@@ -7,38 +7,42 @@ import util.JavaFXExecutionContext.javaFxExecutionContext
 
 import scala.concurrent.Future
 import scalafx.application.JFXApp.PrimaryStage
+import scalafx.geometry.Pos
 import scalafx.scene.control.TextField
-import scalafx.scene.layout.{BorderPane, StackPane}
+import scalafx.scene.layout.StackPane
 import scalafx.scene.{Node, Scene}
 
-class MainWindow(commandListener: CommandListener) extends PrimaryStage {
+class MainWindow(commandListener: CommandListener, messageDisplay: MessageDisplay, inputFieldWidth: Int) extends PrimaryStage {
   title = "Tagger"
   fullScreen = true
   width = 750
   height = 750
 
   private val imageDisplayArea = new StackPane
+
+  // TODO make it so only the input text field can be focused
   scene = new Scene {
     root = new StackPane {
       content = List(
         imageDisplayArea,
-        new BorderPane {
-          mouseTransparent = true
-          bottom = new TextField {
-            requestFocus()
-            onAction = new EventHandler[ActionEvent] {
-              override def handle(event: ActionEvent): Unit = {
-                def displayMessage(message: String): Unit = {
-                  text = message
-                }
+        new TextField {
+          alignmentInParent = Pos.BOTTOM_CENTER
+          maxWidth = inputFieldWidth
+          requestFocus()
+          onAction = new EventHandler[ActionEvent] {
 
-                val commandString = text.value
-                text = ""
-                commandListener.commandEntered(commandString, displayMessage)
-              }
+            override def handle(event: ActionEvent): Unit = {
+              if (messageDisplay.isVisible)
+                messageDisplay.hide()
+
+              val commandString = text.value
+              text = ""
+              commandListener.commandEntered(commandString)
             }
+
           }
-        }
+        },
+        messageDisplay.node
       )
     }
   }
@@ -51,4 +55,6 @@ class MainWindow(commandListener: CommandListener) extends PrimaryStage {
     imageDisplayArea.content = modeRoot
     _currentModeView = modeRoot
   }
+
+
 }
