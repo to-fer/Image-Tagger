@@ -1,5 +1,4 @@
-Image Tagger
-------------
+#Image Tagger
 
 ###Features 
 
