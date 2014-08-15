@@ -42,7 +42,7 @@ class MessageDisplay(width: Int) {
   def newFadeOut = () => new FadeTransition {
     duration = Duration(200)
     node = display
-    fromValue.bind(display.opacity)
+    fromValue.bind(display.opacity) // Allows smooth transition from current opacity to toValue
     toValue = 0
   }
 
