@@ -37,26 +37,22 @@ class SearchMode(imageSource: Path,
         tagDb.create()
         OK
       }
-      // This matches EVERYTHING. All other commands must be above it.
-      case tag: String => {
+      case tag: String if tagDb.contains(tag) => {
         logger.info(s"Search query: $tag")
-        if (tagDb.contains(tag)) {
-          val taggedImageFiles = tagDb.filesWithTag(tag)
-          if (!taggedImageFiles.isEmpty) {
-            val existingTaggedImageFiles = taggedImageFiles.filter(_.exists())
-            val notExistingTaggedImageFiles = taggedImageFiles.filter(!_.exists())
-            if (!notExistingTaggedImageFiles.isEmpty)
-              logger.warn(s"Search results contain non-existent files: $notExistingTaggedImageFiles.")
+        val taggedImageFiles = tagDb.filesWithTag(tag)
+        if (!taggedImageFiles.isEmpty) {
+          val existingTaggedImageFiles = taggedImageFiles.filter(_.exists())
+          val notExistingTaggedImageFiles = taggedImageFiles.filter(!_.exists())
+          if (!notExistingTaggedImageFiles.isEmpty)
+            logger.warn(s"Search results contain non-existent files: $notExistingTaggedImageFiles.")
 
-            searchResults.imagePaths = existingTaggedImageFiles.map(_.toURI.toString)
-            OK
-          }
-          else
-            Error(s"There are no images tagged with $tag.")
+          searchResults.imagePaths = existingTaggedImageFiles.map(_.toURI.toString)
+          OK
         }
         else
-          Error(s"$tag is not a known tag.")
+          Error(s"There are no images tagged with $tag.")
       }
+      case _ => Error(s"Unknown command: $cmd")
     }
   }
 
