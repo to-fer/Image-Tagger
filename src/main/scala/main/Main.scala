@@ -45,10 +45,10 @@ object Main extends JFXApp with LazyLogging {
 
   val tagDb = new TaggerDb(configFile.getParent resolve "tag-db.sqlite")
   val untaggedImages = new UntaggedImages
-  val tagMode = new TagMode(untaggedImages, tagDb, imageSourceDir, imageDestDir)
+  val tagMode = new TagMode(tagDb, untaggedImages, imageSourceDir, imageDestDir)
 
   val searchResults = new SearchResults
-  val searchMode = new SearchMode(imageSourceDir, tagDb, searchResults, 5)
+  val searchMode = new SearchMode(tagDb, imageSourceDir, searchResults, 5, debugEnabled)
 
   val activeMode = new ActiveMode
   val modeSwitcher = new ModeSwitcher(activeMode)
@@ -104,7 +104,7 @@ object Main extends JFXApp with LazyLogging {
   searchResults.addObserver(searchObserver)
 
   val modeSwitchHandler = new ModeSwitchHandler(modeSwitcher, searchMode = searchMode, tagMode = tagMode)
-  commandListener.modeSwitchHandler = modeSwitchHandler
+  commandListener.modeSwitchHandler = modeSwitchHandler.commandHandler
 
   searchMode.start()
   modeSwitcher.switch(searchMode)
