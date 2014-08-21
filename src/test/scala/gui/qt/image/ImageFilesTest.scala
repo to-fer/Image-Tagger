@@ -41,26 +41,26 @@ class ImageFilesTest extends mutable.Specification {
       }
     }
   }
-}
 
-class ImageFileDir(testImageDirString: String) extends mutable.BeforeAfter {
-  lazy val testImageDir = Paths.get(testImageDirString)
+  class ImageFileDir(testImageDirString: String) extends mutable.BeforeAfter {
+    lazy val testImageDir = Paths.get(testImageDirString)
 
-  def before = {
-    if (Files.exists(testImageDir))
-      deleteImageDir()
+    override def before = {
+      if (Files.exists(testImageDir))
+        deleteImageDir()
 
-    Files.createDirectory(testImageDir)
-  }
+      Files.createDirectory(testImageDir)
+    }
 
-  def after = deleteImageDir()
+    override def after = deleteImageDir()
 
-  private def deleteImageDir() = {
-    val testImageDirContents = testImageDir.toFile.listFiles
-    if (testImageDirContents != null)
-      testImageDirContents.foreach(_.delete())
+    private def deleteImageDir() = {
+      val testImageDirContents = testImageDir.toFile.listFiles
+      if (testImageDirContents != null)
+        testImageDirContents.foreach(_.delete())
 
-    Files.delete(testImageDir)
+      Files.delete(testImageDir)
+    }
   }
 }
 
