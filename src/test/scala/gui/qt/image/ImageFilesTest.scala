@@ -3,60 +3,64 @@ package gui.qt.image
 import java.nio.file._
 
 import file.ImageFiles
-import org.specs2.mutable.Specification
-import org.specs2.specification.{Fragments, Step}
+import org.specs2._
 
-class ImageFilesTest extends ImageFileSpec {
-  import gui.qt.image.imageDirSetup.testImageDir
+class ImageFilesTest extends mutable.Specification {
 
   "ImageFiles" should {
+    "find image files" in {
+      "directory containing NO image files" in new ImageFileDir("directory-containing-NO-image-files") {
+        val imageFiles = ImageFiles.imageFilesIn(testImageDir.toString)
+        imageFiles must be empty
+      }
 
-    "imageFilesIn('directory path with no images')" in {
-      val imageFiles = ImageFiles.imageFilesIn(testImageDir.toString)
-      imageFiles must be empty
+      "directory containing image files" in new ImageFileDir("directory-containing-image-files") {
+        // Filter out all uppercase extensions because they aren't differentiated from
+        // a file with the same name but with a lowercase extension when they're created.
+        val expectedImagePaths =
+          ImageFiles.imageExtensions.filter(str => str.charAt(str.length - 1).isLower).map(ext => testImageDir.resolve(s"$ext-test.$ext"))
+        val testFilePaths = expectedImagePaths ++ Seq("not-an-image.txt", "not-an-image.doc").map(testImageDir.resolve)
+        val testFiles = testFilePaths.map(_.toFile)
+        testFiles.foreach(_.createNewFile())
+
+        val imageFiles = ImageFiles.imageFilesIn(testImageDir.toString)
+        val expectedImageFiles = expectedImagePaths.map(_.toFile)
+        expectedImageFiles.sorted.sameElements(imageFiles.sorted) mustEqual true
+      }
     }
 
-    "imageFilesIn('directory path with images')" in {
-      // Filter out all uppercase extensions because they aren't differentiated from
-      // a file with the same name but with a lowercase extension when they're created.
-      val expectedImagePaths =
-        ImageFiles.imageExtensions.filter(str => str.charAt(str.length - 1).isLower).map(ext => testImageDir.resolve(s"$ext-test.$ext"))
-      val testFilePaths = expectedImagePaths ++ Seq("not-an-image.txt", "not-an-image.doc").map(testImageDir.resolve)
-      val testFiles = testFilePaths.map(_.toFile)
-      testFiles.foreach(_.createNewFile())
+    "identify image file types" in {
+      "animated image files" in {
+        val testFilePaths = List("test.gif", "test.apng")
+        testFilePaths.forall(ImageFiles.isAnimated) mustEqual true
+      }
 
-      val imageFiles = ImageFiles.imageFilesIn(testImageDir.toString)
-      val expectedImageFiles = expectedImagePaths.map(_.toFile)
-      expectedImageFiles.sorted.sameElements(imageFiles.sorted) mustEqual true
+      "still image files" in {
+        val testFilePaths = List("test.png", "test.jpg")
+        testFilePaths.forall(!ImageFiles.isAnimated(_)) mustEqual true
+      }
     }
-
-    "isAnimated('path that denotes an animated image file')" in {
-      val testFilePaths = List("test.gif", "test.apng")
-      testFilePaths.forall(ImageFiles.isAnimated) mustEqual true
-    }
-
-    "isAnimated('path that doesn't denote an animated image file')" in {
-      val testFilePaths = List("test.png", "test.jpg")
-      testFilePaths.forall(!ImageFiles.isAnimated(_)) mustEqual true
-    }
-
   }
 }
 
-object imageDirSetup {
-  lazy val testImageDir = Paths.get("test-images")
-  lazy val setupDbDir = {
+class ImageFileDir(testImageDirString: String) extends mutable.BeforeAfter {
+  lazy val testImageDir = Paths.get(testImageDirString)
+
+  def before = {
     if (Files.exists(testImageDir))
-      cleanImageDir
+      deleteImageDir()
+
     Files.createDirectory(testImageDir)
   }
-  lazy val cleanImageDir = {
-    testImageDir.toFile.listFiles.foreach(_.delete)
+
+  def after = deleteImageDir()
+
+  private def deleteImageDir() = {
+    val testImageDirContents = testImageDir.toFile.listFiles
+    if (testImageDirContents != null)
+      testImageDirContents.foreach(_.delete())
+
     Files.delete(testImageDir)
   }
 }
 
-trait ImageFileSpec extends Specification {
-  lazy val db = imageDirSetup
-  override def map(fs: => Fragments) = Step(db.setupDbDir) ^ fs ^ Step(db.cleanImageDir)
-}
